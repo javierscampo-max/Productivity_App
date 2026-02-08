@@ -8,9 +8,10 @@ export const SettingsPage: React.FC = () => {
 
     const themes: { id: Theme; name: string; icon: React.ReactNode; color: string }[] = [
         { id: 'midnight', name: 'Midnight', icon: <Moon size={20} />, color: 'bg-gray-950' },
-        { id: 'neon', name: 'Neon Night', icon: <span className="text-fuchsia-500 font-bold">N</span>, color: 'bg-gray-900 border-fuchsia-500' },
+        { id: 'neon-blue', name: 'Neon Night', icon: <span className="text-cyan-400 font-bold">N</span>, color: 'bg-slate-900 border-cyan-500' },
         { id: 'sky', name: 'Sky', icon: <Cloud size={20} />, color: 'bg-sky-100' },
-        { id: 'pastel', name: 'Pastel', icon: <Heart size={20} />, color: 'bg-rose-100' },
+        { id: 'pastel-pink', name: 'Pastel Pink', icon: <Heart size={20} />, color: 'bg-rose-100' },
+        { id: 'pastel-blue', name: 'Pastel Blue', icon: <Cloud size={20} className="text-blue-500" />, color: 'bg-blue-100' },
     ];
 
     return (
@@ -30,7 +31,7 @@ export const SettingsPage: React.FC = () => {
                                     : "border-transparent bg-gray-800/40 hover:bg-gray-800/60"
                             )}
                         >
-                            <div className={clsx("w-10 h-10 rounded-full flex items-center justify-center shadow-lg", t.color, t.id === 'sky' || t.id === 'pastel' ? 'text-black' : 'text-white')}>
+                            <div className={clsx("w-10 h-10 rounded-full flex items-center justify-center shadow-lg", t.color, ['sky', 'pastel-pink', 'pastel-blue'].includes(t.id) ? 'text-black' : 'text-white')}>
                                 {t.icon}
                             </div>
                             <span className="font-medium text-sm text-gray-300">{t.name}</span>

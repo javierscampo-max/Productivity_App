@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-export type Theme = 'midnight' | 'neon' | 'sky' | 'pastel';
+export type Theme = 'midnight' | 'neon-blue' | 'sky' | 'pastel-pink' | 'pastel-blue';
 
 interface ThemeState {
     theme: Theme;
