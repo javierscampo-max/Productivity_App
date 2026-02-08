@@ -62,37 +62,37 @@ export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) =>
     };
 
     return (
-        <div className="fixed inset-0 bg-black z-50 flex flex-col">
+        <div className="fixed inset-0 bg-background z-50 flex flex-col">
             {/* Header */}
-            <div className="bg-black/90 p-4 border-b border-gray-800 flex items-center justify-between sticky top-0 z-10 backdrop-blur-md">
-                <button onClick={onBack} className="p-2 hover:bg-gray-800 rounded-full text-gray-400">
+            <div className="bg-surface/90 p-4 border-b border-border flex items-center justify-between sticky top-0 z-10 backdrop-blur-md">
+                <button onClick={onBack} className="p-2 hover:bg-surface/50 rounded-full text-muted hover:text-text transition-colors">
                     <X size={24} />
                 </button>
 
                 <div className="flex items-center gap-4">
-                    <button onClick={prevDay}><ChevronLeft size={20} className="text-gray-500" /></button>
-                    <h2 className="text-xl font-bold text-white">
+                    <button onClick={prevDay}><ChevronLeft size={20} className="text-muted hover:text-text transition-colors" /></button>
+                    <h2 className="text-xl font-bold text-text">
                         {format(currentDate, 'EEE d, MMM')}
                     </h2>
-                    <button onClick={nextDay}><ChevronRight size={20} className="text-gray-500" /></button>
+                    <button onClick={nextDay}><ChevronRight size={20} className="text-muted hover:text-text transition-colors" /></button>
                 </div>
 
                 <div className="w-8" /> {/* Spacer for centering */}
             </div>
 
             {/* Timeline Content */}
-            <div className="flex-1 overflow-y-auto relative bg-gray-900/10">
+            <div className="flex-1 overflow-y-auto relative bg-surface/30">
                 {/* Grid Lines */}
                 {hours.map((hour) => (
                     <div
                         key={hour}
-                        className="flex items-start border-b border-gray-800/50"
+                        className="flex items-start border-b border-border/50"
                         style={{ height: `${hourHeight}px` }}
                     >
-                        <span className="w-16 text-xs text-gray-500 text-right pr-2 pt-1">
+                        <span className="w-16 text-xs text-muted text-right pr-2 pt-1">
                             {format(new Date().setHours(hour, 0, 0, 0), 'HH:mm')}
                         </span>
-                        <div className="flex-1 border-l border-gray-800 h-full relative" />
+                        <div className="flex-1 border-l border-border h-full relative" />
                     </div>
                 ))}
 
@@ -104,10 +104,10 @@ export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) =>
                             className={clsx(
                                 "absolute left-1 right-2 rounded px-2 py-1 text-xs border overflow-hidden pointer-events-auto shadow-sm hover:shadow-md transition-shadow cursor-pointer",
                                 event.type === 'birthday'
-                                    ? 'bg-pink-900/80 border-pink-500 text-pink-100'
+                                    ? 'bg-pink-500/20 border-pink-500 text-pink-700 dark:text-pink-200'
                                     : event.type === 'holiday'
-                                        ? 'bg-green-900/80 border-green-500 text-green-100'
-                                        : 'bg-blue-900/80 border-blue-500 text-blue-100'
+                                        ? 'bg-green-500/20 border-green-500 text-green-700 dark:text-green-200'
+                                        : 'bg-primary/20 border-primary text-text'
                             )}
                             style={getEventStyle(event)}
                             onClick={() => alert(`Event: ${event.title}`)} // Placeholder action
@@ -123,7 +123,7 @@ export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) =>
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 transform pointer-events-auto">
                 <button
                     onClick={onAddEvent}
-                    className="bg-blue-600 hover:bg-blue-500 text-white rounded-full p-4 shadow-lg active:scale-95 transition-transform"
+                    className="bg-primary hover:opacity-90 text-white rounded-full p-4 shadow-lg active:scale-95 transition-all"
                 >
                     <Plus size={32} />
                 </button>

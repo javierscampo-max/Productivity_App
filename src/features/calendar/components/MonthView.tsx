@@ -37,22 +37,22 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick }) => {
     const getDayEvents = (day: Date) => events.filter(e => isSameDay(e.startDate, day));
 
     return (
-        <div className="flex flex-col h-full bg-black text-white p-4">
+        <div className="flex flex-col h-full bg-surface text-text p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
-                <button onClick={prevMonth} className="p-2 hover:bg-gray-800 rounded-full">
-                    <ChevronLeft size={24} className="text-blue-500" />
+                <button onClick={prevMonth} className="p-2 hover:bg-surface/50 rounded-full transition-colors">
+                    <ChevronLeft size={24} className="text-primary" />
                 </button>
                 <h2 className="text-xl font-bold">
                     {format(currentDate, 'MMMM yyyy')}
                 </h2>
-                <button onClick={nextMonth} className="p-2 hover:bg-gray-800 rounded-full">
-                    <ChevronRight size={24} className="text-blue-500" />
+                <button onClick={nextMonth} className="p-2 hover:bg-surface/50 rounded-full transition-colors">
+                    <ChevronRight size={24} className="text-primary" />
                 </button>
             </div>
 
             {/* Week Days Header */}
-            <div className="grid grid-cols-7 mb-2 text-center text-gray-500 font-medium text-sm">
+            <div className="grid grid-cols-7 mb-2 text-center text-muted font-medium text-sm">
                 {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day) => (
                     <div key={day} className="py-2">{day}</div>
                 ))}
@@ -70,12 +70,14 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick }) => {
                             key={day.toISOString()}
                             onClick={() => onDayClick(day)}
                             className={clsx(
-                                'min-h-[60px] relative p-1 border border-gray-800 rounded-lg flex flex-col items-center justify-start cursor-pointer hover:bg-gray-900 transition-colors',
-                                !isCurrentMonth && 'opacity-30',
-                                isToday && 'border-blue-500 bg-blue-900/20'
+                                'min-h-[60px] relative p-1 border rounded-lg flex flex-col items-center justify-start cursor-pointer transition-all',
+                                isToday
+                                    ? 'border-primary bg-primary/10'
+                                    : 'border-border hover:bg-surface/50',
+                                !isCurrentMonth && 'opacity-30'
                             )}
                         >
-                            <span className={clsx('text-sm', isToday && 'font-bold text-blue-400')}>
+                            <span className={clsx('text-sm', isToday && 'font-bold text-primary')}>
                                 {format(day, 'd')}
                             </span>
 
@@ -86,7 +88,7 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick }) => {
                                         key={idx}
                                         className={clsx(
                                             "w-1.5 h-1.5 rounded-full",
-                                            bgEvent.type === 'birthday' ? 'bg-pink-500' : 'bg-blue-500'
+                                            bgEvent.type === 'birthday' ? 'bg-pink-400' : 'bg-primary'
                                         )}
                                     />
                                 ))}
@@ -97,8 +99,8 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick }) => {
             </div>
 
             {/* Bottom Section: Day's events summary? or just Add Event */}
-            <div className="mt-4 border-t border-gray-800 pt-4">
-                <p className="text-sm text-gray-500 mb-2">Select a day to view details</p>
+            <div className="mt-4 border-t border-border pt-4">
+                <p className="text-sm text-muted mb-2">Select a day to view details</p>
             </div>
         </div>
     );
