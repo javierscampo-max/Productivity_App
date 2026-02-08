@@ -9,9 +9,8 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    DragEndEvent,
     TouchSensor,
-    MouseSensor
+    DragEndEvent
 } from '@dnd-kit/core';
 import {
     arrayMove,
