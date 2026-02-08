@@ -20,7 +20,10 @@ interface DayViewProps {
 
 export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) => {
     const [currentDate, setCurrentDate] = React.useState(date);
-    const events = useCalendarStore((state) => state.events);
+    const { events, deleteEvent } = useCalendarStore((state) => ({
+        events: state.events,
+        deleteEvent: state.deleteEvent
+    }));
 
     // Filter events for this day
     const dayEvents = events.filter((event) => {
@@ -113,7 +116,12 @@ export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) =>
                                         : 'bg-primary/20 border-primary text-text'
                             )}
                             style={getEventStyle(event)}
-                            onClick={() => alert(`Event: ${event.title}`)} // Placeholder action
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (confirm(`Delete "${event.title}"?`)) {
+                                    deleteEvent(event.id);
+                                }
+                            }}
                         >
                             <div className="font-semibold">{event.title}</div>
                             <div>{format(event.startDate, 'HH:mm')} - {format(event.endDate, 'HH:mm')}</div>

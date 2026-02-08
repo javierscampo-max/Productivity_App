@@ -17,7 +17,13 @@ export const useCalendarStore = create<CalendarState>()(
             events: [],
             addEvent: (eventData) => set((state) => {
                 const newEvents: CalendarEvent[] = [];
-                const baseEvent = { ...eventData, id: crypto.randomUUID() };
+                const seriesId = crypto.randomUUID(); // Generate a series ID for this batch
+
+                const baseEvent = {
+                    ...eventData,
+                    id: crypto.randomUUID(),
+                    seriesId: seriesId
+                };
                 newEvents.push(baseEvent);
 
                 // Handle Birthdays/Holidays recurrence (simple implementation: generate next 5 years)
@@ -26,6 +32,7 @@ export const useCalendarStore = create<CalendarState>()(
                         newEvents.push({
                             ...baseEvent,
                             id: crypto.randomUUID(),
+                            seriesId: seriesId, // Share the same series ID
                             startDate: addYears(eventData.startDate, i),
                             endDate: addYears(eventData.endDate, i),
                             isRecurring: true,
@@ -35,9 +42,22 @@ export const useCalendarStore = create<CalendarState>()(
                 }
                 return { events: [...state.events, ...newEvents] };
             }),
-            deleteEvent: (id) => set((state) => ({
-                events: state.events.filter((e) => e.id !== id),
-            })),
+            deleteEvent: (id) => set((state) => {
+                const eventToDelete = state.events.find((e) => e.id === id);
+                if (!eventToDelete) return {};
+
+                // If it has a seriesId, delete all events in that series
+                if (eventToDelete.seriesId) {
+                    return {
+                        events: state.events.filter((e) => e.seriesId !== eventToDelete.seriesId),
+                    };
+                }
+
+                // Fallback for migration or single events without seriesId
+                return {
+                    events: state.events.filter((e) => e.id !== id),
+                };
+            }),
             cleanupPastEvents: () => set((state) => {
                 const today = startOfDay(new Date());
                 return {

@@ -11,4 +11,5 @@ export interface CalendarEvent {
     // Recurrence rule? For now just simple repetitive logic or manual expansion
     isRecurring?: boolean;
     recurrenceType?: 'yearly'; // for birthdays
+    seriesId?: string; // To link recurring events together
 }

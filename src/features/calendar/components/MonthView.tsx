@@ -11,7 +11,7 @@ import {
     addMonths,
     subMonths
 } from 'date-fns';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useCalendarStore } from '../store/useCalendarStore';
 
@@ -23,7 +23,10 @@ interface MonthViewProps {
 
 export const MonthView: React.FC<MonthViewProps> = ({ onDayClick, onDayDoubleClick, selectedDate }) => {
     const [currentDate, setCurrentDate] = React.useState(new Date());
-    const events = useCalendarStore((state) => state.events);
+    const { events, deleteEvent } = useCalendarStore((state) => ({
+        events: state.events,
+        deleteEvent: state.deleteEvent
+    }));
 
     const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(currentDate);
@@ -119,12 +122,24 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick, onDayDoubleCli
                         {selectedDayEvents.length > 0 ? (
                             <div className="space-y-1">
                                 {selectedDayEvents.map(event => (
-                                    <div key={event.id} className="flex items-center gap-2 text-sm bg-surface/50 p-2 rounded border border-border">
-                                        <div className={clsx("w-2 h-2 rounded-full", event.type === 'birthday' ? 'bg-pink-400' : 'bg-primary')} />
-                                        <span className="text-muted text-xs whitespace-nowrap">
-                                            {format(event.startDate, 'HH:mm')} - {format(event.endDate, 'HH:mm')}
-                                        </span>
-                                        <span className="text-text font-medium truncate">{event.title}</span>
+                                    <div key={event.id} className="flex items-center justify-between gap-2 text-sm bg-surface/50 p-2 rounded border border-border group">
+                                        <div className="flex items-center gap-2 overflow-hidden">
+                                            <div className={clsx("w-2 h-2 rounded-full flex-shrink-0", event.type === 'birthday' ? 'bg-pink-400' : 'bg-primary')} />
+                                            <span className="text-muted text-xs whitespace-nowrap">
+                                                {format(event.startDate, 'HH:mm')} - {format(event.endDate, 'HH:mm')}
+                                            </span>
+                                            <span className="text-text font-medium truncate">{event.title}</span>
+                                        </div>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (confirm('Delete this event?')) deleteEvent(event.id);
+                                            }}
+                                            className="text-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                                            title="Delete"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
                                     </div>
                                 ))}
                             </div>
