@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTaskStore } from '../../tasks/store/useTaskStore';
 import { useCalendarStore } from '../store/useCalendarStore';
 import { EventType } from '../../../types/event';
-import { format, set, startOfDay } from 'date-fns';
+import { format, set, startOfDay, addDays, isBefore } from 'date-fns';
 import { X, Check } from 'lucide-react';
 
 interface AddEventModalProps {
@@ -45,6 +45,11 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
         if (eventType === 'birthday' || eventType === 'holiday') {
             start = startOfDay(selectedDate);
             end = set(selectedDate, { hours: 23, minutes: 59 });
+        } else {
+            // Handle overnight events (e.g. 11 PM to 1 AM)
+            if (isBefore(end, start)) {
+                end = addDays(end, 1);
+            }
         }
 
         if (activeTab === 'event') {
