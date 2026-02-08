@@ -131,9 +131,6 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick, onDayDoubleCli
                         ) : (
                             <p className="text-sm text-muted italic">No events scheduled.</p>
                         )}
-                        <p className="text-xs text-muted mt-2 pt-1 border-t border-border/50">
-                            Double click to view details.
-                        </p>
                     </div>
                 ) : (
                     <p className="text-sm text-muted mb-2">Select a day to view details</p>
