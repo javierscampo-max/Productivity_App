@@ -64,7 +64,20 @@ export const useCalendarStore = create<CalendarState>()(
         }),
         {
             name: 'calendar-storage',
-            storage: createJSONStorage(() => localStorage),
+            storage: createJSONStorage(() => localStorage, {
+                reviver: (key, value) => {
+                    if (key === 'startDate' || key === 'endDate') {
+                        return new Date(value as string);
+                    }
+                    return value;
+                },
+                replacer: (key, value) => {
+                    if (key === 'startDate' || key === 'endDate') {
+                        return value; // Standard stringify works for Date
+                    }
+                    return value;
+                }
+            }),
         }
     )
 );
