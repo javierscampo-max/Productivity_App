@@ -11,17 +11,22 @@ interface CalendarState {
     generateRecurringEvents: () => void; // call periodically?
 }
 
+// Safe ID generator for environments where crypto.randomUUID might be missing
+const generateId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
+};
+
 export const useCalendarStore = create<CalendarState>()(
     persist(
         (set) => ({
             events: [],
             addEvent: (eventData) => set((state) => {
                 const newEvents: CalendarEvent[] = [];
-                const seriesId = crypto.randomUUID(); // Generate a series ID for this batch
+                const seriesId = generateId(); // Generate a series ID for this batch
 
                 const baseEvent = {
                     ...eventData,
-                    id: crypto.randomUUID(),
+                    id: generateId(),
                     seriesId: seriesId
                 };
                 newEvents.push(baseEvent);
@@ -31,7 +36,7 @@ export const useCalendarStore = create<CalendarState>()(
                     for (let i = 1; i <= 5; i++) {
                         newEvents.push({
                             ...baseEvent,
-                            id: crypto.randomUUID(),
+                            id: generateId(),
                             seriesId: seriesId, // Share the same series ID
                             startDate: addYears(eventData.startDate, i),
                             endDate: addYears(eventData.endDate, i),

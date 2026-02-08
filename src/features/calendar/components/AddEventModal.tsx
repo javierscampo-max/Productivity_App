@@ -22,6 +22,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
 
     // Task Form State
     const [selectedTaskId, setSelectedTaskId] = useState('');
+    const [showError, setShowError] = useState(false);
 
     const tasks = useTaskStore((state) => state.tasks);
     const updateTask = useTaskStore((state) => state.updateTask);
@@ -31,7 +32,10 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
 
     const handleConfirm = () => {
         // Basic validation
-        if (activeTab === 'event' && !eventTitle.trim()) return;
+        if (activeTab === 'event' && !eventTitle.trim()) {
+            setShowError(true);
+            return;
+        }
         if (activeTab === 'task' && !selectedTaskId) return;
 
         // Construct Date objects
@@ -80,6 +84,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
         setEventTitle('');
         setEventType('normal');
         setSelectedTaskId('');
+        setShowError(false);
         onClose();
     };
 
@@ -129,10 +134,14 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                 <input
                                     type="text"
                                     value={eventTitle}
-                                    onChange={(e) => setEventTitle(e.target.value)}
+                                    onChange={(e) => {
+                                        setEventTitle(e.target.value);
+                                        if (e.target.value.trim()) setShowError(false);
+                                    }}
                                     placeholder="Event Title"
-                                    className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500"
+                                    className={`w-full bg-gray-900 border ${showError ? 'border-red-500' : 'border-gray-700'} rounded px-3 py-2 text-white outline-none focus:border-blue-500 transition-colors`}
                                 />
+                                {showError && <p className="text-red-500 text-xs mt-1">Title is required</p>}
                             </div>
                         </>
                     ) : (
