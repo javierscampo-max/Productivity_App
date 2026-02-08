@@ -77,23 +77,7 @@ export const TaskList: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-md mx-auto space-y-6 pb-20">
-            {/* Add Task Input */}
-            <form onSubmit={handleAddTask} className="flex gap-2 mb-4 sticky top-[72px] z-10 bg-background/95 backdrop-blur py-2">
-                <input
-                    type="text"
-                    value={newTaskTitle}
-                    onChange={(e) => setNewTaskTitle(e.target.value)}
-                    placeholder="New Task..."
-                    className="flex-1 bg-surface border-border border text-text rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none placeholder-muted shadow-sm"
-                />
-                <button
-                    type="submit"
-                    className="bg-primary hover:opacity-90 text-white p-3 rounded-lg transition-opacity shadow-sm"
-                >
-                    <Plus size={24} />
-                </button>
-            </form>
+        <div className="w-full max-w-md mx-auto space-y-6 pb-28">
 
             {/* Todo List - Draggable */}
             <div className="space-y-3">
@@ -147,6 +131,25 @@ export const TaskList: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {/* Add Task Input - Fixed Bottom */}
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur border-t border-border z-20">
+                <form onSubmit={handleAddTask} className="flex gap-2 max-w-md mx-auto">
+                    <input
+                        type="text"
+                        value={newTaskTitle}
+                        onChange={(e) => setNewTaskTitle(e.target.value)}
+                        placeholder="New Task..."
+                        className="flex-1 bg-surface border-border border text-text rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none placeholder-muted shadow-sm"
+                    />
+                    <button
+                        type="submit"
+                        className="bg-primary hover:opacity-90 text-white p-3 rounded-lg transition-opacity shadow-sm"
+                    >
+                        <Plus size={24} />
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };
