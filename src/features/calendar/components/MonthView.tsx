@@ -17,9 +17,11 @@ import { useCalendarStore } from '../store/useCalendarStore';
 
 interface MonthViewProps {
     onDayClick: (day: Date) => void;
+    onDayDoubleClick: (day: Date) => void;
+    selectedDate: Date | null;
 }
 
-export const MonthView: React.FC<MonthViewProps> = ({ onDayClick }) => {
+export const MonthView: React.FC<MonthViewProps> = ({ onDayClick, onDayDoubleClick, selectedDate }) => {
     const [currentDate, setCurrentDate] = React.useState(new Date());
     const events = useCalendarStore((state) => state.events);
 
@@ -35,6 +37,11 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick }) => {
 
     // Get events for specific day (just count or presence)
     const getDayEvents = (day: Date) => events.filter(e => isSameDay(e.startDate, day));
+
+    // Get events for the selected date
+    const selectedDayEvents = selectedDate
+        ? events.filter(e => isSameDay(e.startDate, selectedDate)).sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+        : [];
 
     return (
         <div className="flex flex-col h-full bg-surface text-text p-4">
@@ -64,20 +71,24 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick }) => {
                     const dayEvents = getDayEvents(day);
                     const isCurrentMonth = isSameMonth(day, monthStart);
                     const isToday = isSameDay(day, new Date());
+                    const isSelected = selectedDate && isSameDay(day, selectedDate);
 
                     return (
                         <div
                             key={day.toISOString()}
                             onClick={() => onDayClick(day)}
+                            onDoubleClick={() => onDayDoubleClick(day)}
                             className={clsx(
                                 'min-h-[60px] relative p-1 border rounded-lg flex flex-col items-center justify-start cursor-pointer transition-all',
-                                isToday
-                                    ? 'border-primary bg-primary/10'
-                                    : 'border-border hover:bg-surface/50',
+                                isSelected
+                                    ? 'border-primary bg-primary/20 ring-1 ring-primary'
+                                    : isToday
+                                        ? 'border-primary/50 bg-primary/5'
+                                        : 'border-border hover:bg-surface/50',
                                 !isCurrentMonth && 'opacity-30'
                             )}
                         >
-                            <span className={clsx('text-sm', isToday && 'font-bold text-primary')}>
+                            <span className={clsx('text-sm', isToday && 'font-bold text-primary', isSelected && 'font-bold')}>
                                 {format(day, 'd')}
                             </span>
 
@@ -98,9 +109,35 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick }) => {
                 })}
             </div>
 
-            {/* Bottom Section: Day's events summary? or just Add Event */}
-            <div className="mt-4 border-t border-border pt-4">
-                <p className="text-sm text-muted mb-2">Select a day to view details</p>
+            {/* Bottom Section: Day's events summary */}
+            <div className="mt-4 border-t border-border pt-4 min-h-[100px]">
+                {selectedDate ? (
+                    <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-text mb-2">
+                            Events for {format(selectedDate, 'MMMM d, yyyy')}
+                        </h3>
+                        {selectedDayEvents.length > 0 ? (
+                            <div className="space-y-1">
+                                {selectedDayEvents.map(event => (
+                                    <div key={event.id} className="flex items-center gap-2 text-sm bg-surface/50 p-2 rounded border border-border">
+                                        <div className={clsx("w-2 h-2 rounded-full", event.type === 'birthday' ? 'bg-pink-400' : 'bg-primary')} />
+                                        <span className="text-muted text-xs whitespace-nowrap">
+                                            {format(event.startDate, 'HH:mm')} - {format(event.endDate, 'HH:mm')}
+                                        </span>
+                                        <span className="text-text font-medium truncate">{event.title}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-sm text-muted italic">No events scheduled.</p>
+                        )}
+                        <p className="text-xs text-muted mt-2 pt-1 border-t border-border/50">
+                            Double click to view details.
+                        </p>
+                    </div>
+                ) : (
+                    <p className="text-sm text-muted mb-2">Select a day to view details</p>
+                )}
             </div>
         </div>
     );

@@ -10,12 +10,18 @@ export const CalendarPage: React.FC = () => {
 
     const handleDayClick = (date: Date) => {
         setSelectedDate(date);
+    };
+
+    const handleDayDoubleClick = (date: Date) => {
+        setSelectedDate(date);
         setView('day');
     };
 
     const handleBackToMonth = () => {
         setView('month');
-        setSelectedDate(null);
+        // Keep selected date so context is lost not completely? Or clear it? 
+        // Usually keeping it is nice, but user might want to clear. 
+        // Let's keep it for now as "last viewed".
     };
 
     const handleAddEventClick = () => {
@@ -25,7 +31,11 @@ export const CalendarPage: React.FC = () => {
     return (
         <div className="h-full relative">
             {view === 'month' ? (
-                <MonthView onDayClick={handleDayClick} />
+                <MonthView
+                    onDayClick={handleDayClick}
+                    onDayDoubleClick={handleDayDoubleClick}
+                    selectedDate={selectedDate}
+                />
             ) : (
                 selectedDate && (
                     <DayView
