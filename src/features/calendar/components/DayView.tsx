@@ -5,8 +5,8 @@ import {
     subDays,
     startOfDay,
     endOfDay,
-    isWithinInterval,
-    differenceInMinutes
+    differenceInMinutes,
+    areIntervalsOverlapping
 } from 'date-fns';
 import { X, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { useCalendarStore } from '../store/useCalendarStore';
@@ -30,9 +30,9 @@ export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) =>
         const dayStart = startOfDay(currentDate);
         const dayEnd = endOfDay(currentDate);
         // Check if event overlaps with this day
-        return (
-            isWithinInterval(event.startDate, { start: dayStart, end: dayEnd }) ||
-            isWithinInterval(event.endDate, { start: dayStart, end: dayEnd })
+        return areIntervalsOverlapping(
+            { start: event.startDate, end: event.endDate },
+            { start: dayStart, end: dayEnd }
         );
     });
 

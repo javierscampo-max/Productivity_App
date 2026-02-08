@@ -9,7 +9,10 @@ import {
     isSameMonth,
     isSameDay,
     addMonths,
-    subMonths
+    subMonths,
+    startOfDay,
+    endOfDay,
+    areIntervalsOverlapping
 } from 'date-fns';
 import { ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -38,12 +41,27 @@ export const MonthView: React.FC<MonthViewProps> = ({ onDayClick, onDayDoubleCli
     const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
     const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
 
-    // Get events for specific day (just count or presence)
-    const getDayEvents = (day: Date) => events.filter(e => isSameDay(e.startDate, day));
+    // Get events for specific day (check for overlap)
+    const getDayEvents = (day: Date) => {
+        const dayStart = startOfDay(day);
+        const dayEnd = endOfDay(day);
+
+        return events.filter(e => {
+            return areIntervalsOverlapping(
+                { start: e.startDate, end: e.endDate },
+                { start: dayStart, end: dayEnd }
+            );
+        });
+    };
 
     // Get events for the selected date
     const selectedDayEvents = selectedDate
-        ? events.filter(e => isSameDay(e.startDate, selectedDate)).sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+        ? events.filter(e => {
+            return areIntervalsOverlapping(
+                { start: e.startDate, end: e.endDate },
+                { start: startOfDay(selectedDate), end: endOfDay(selectedDate) }
+            );
+        }).sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
         : [];
 
     return (
