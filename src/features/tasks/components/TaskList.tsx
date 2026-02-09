@@ -77,8 +77,7 @@ export const TaskList: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-md mx-auto space-y-6 pb-28">
-
+        <div className="w-full max-w-md mx-auto space-y-6 pb-44">
             {/* Todo List - Draggable */}
             <div className="space-y-3">
                 <h2 className="text-xl font-bold text-text mb-2 px-1">Todo ({todoTasks.length})</h2>
@@ -133,7 +132,7 @@ export const TaskList: React.FC = () => {
             )}
 
             {/* Add Task Input - Fixed Bottom */}
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur border-t border-border z-20">
+            <div className="fixed bottom-[60px] left-0 right-0 p-4 bg-background/95 backdrop-blur border-t border-border z-20">
                 <form onSubmit={handleAddTask} className="flex gap-2 max-w-md mx-auto">
                     <input
                         type="text"
