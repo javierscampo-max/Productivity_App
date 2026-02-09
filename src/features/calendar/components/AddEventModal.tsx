@@ -162,7 +162,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
 
                     {/* Time Picker (Common) */}
                     {(activeTab === 'task' || (eventType !== 'birthday' && eventType !== 'holiday')) && (
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4">
                             <div className="flex-1">
                                 <label className="block text-xs text-gray-500 mb-1">Start</label>
                                 <input
