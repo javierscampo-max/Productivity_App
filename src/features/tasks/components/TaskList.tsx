@@ -80,7 +80,7 @@ export const TaskList: React.FC = () => {
         <div className="w-full max-w-md mx-auto space-y-6 pb-52">
             {/* Todo List - Draggable */}
             <div className="space-y-3">
-                <h2 className="text-xl font-bold text-text mb-2 px-1">Todo ({todoTasks.length})</h2>
+                <h2 className="text-xl font-bold text-text mb-2 px-1">To-do ({todoTasks.length})</h2>
 
                 <DndContext
                     sensors={sensors}
