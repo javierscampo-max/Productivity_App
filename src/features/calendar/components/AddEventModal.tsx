@@ -162,9 +162,9 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
 
                     {/* Time Picker (Common) */}
                     {(activeTab === 'task' || (eventType !== 'birthday' && eventType !== 'holiday')) && (
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-4" style={{ gap: '1rem' }}>
                             <div>
-                                <label className="block text-xs text-gray-500 mb-1">Start</label>
+                                <label className="block text-xs text-gray-500 mb-1">Start Time</label>
                                 <input
                                     type="time"
                                     value={startTime}
@@ -173,7 +173,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs text-gray-500 mb-1">End</label>
+                                <label className="block text-xs text-gray-500 mb-1">End Time</label>
                                 <input
                                     type="time"
                                     value={endTime}
