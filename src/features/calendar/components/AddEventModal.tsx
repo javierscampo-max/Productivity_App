@@ -163,8 +163,8 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                     {/* Time Picker (Common) */}
                     {(activeTab === 'task' || (eventType !== 'birthday' && eventType !== 'holiday')) && (
                         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-                            <div style={{ flex: 1 }}>
-                                <label className="block text-xs text-gray-500 mb-1">Start at</label>
+                            <div style={{ width: '50%', paddingRight: '8px' }}>
+                                <label className="block text-xs text-gray-500 mb-1">Start</label>
                                 <input
                                     type="time"
                                     value={startTime}
@@ -172,12 +172,8 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                     className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500"
                                 />
                             </div>
-
-                            {/* Physical Spacer */}
-                            <div style={{ width: '20px', flexShrink: 0 }} />
-
-                            <div style={{ flex: 1 }}>
-                                <label className="block text-xs text-gray-500 mb-1">End at</label>
+                            <div style={{ width: '50%', paddingLeft: '8px' }}>
+                                <label className="block text-xs text-gray-500 mb-1">End</label>
                                 <input
                                     type="time"
                                     value={endTime}
