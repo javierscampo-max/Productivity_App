@@ -164,7 +164,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                     {(activeTab === 'task' || (eventType !== 'birthday' && eventType !== 'holiday')) && (
                         <div style={{ display: 'flex', width: '100%' }}>
                             <div style={{ width: '50%', paddingRight: '10px', boxSizing: 'border-box' }}>
-                                <label className="block text-xs text-gray-500 mb-1">Start Time</label>
+                                <label className="block text-xs text-gray-500 mb-1">Start Event</label>
                                 <input
                                     type="time"
                                     value={startTime}
@@ -173,7 +173,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                 />
                             </div>
                             <div style={{ width: '50%', paddingLeft: '10px', boxSizing: 'border-box' }}>
-                                <label className="block text-xs text-gray-500 mb-1">End Time</label>
+                                <label className="block text-xs text-gray-500 mb-1">End Event</label>
                                 <input
                                     type="time"
                                     value={endTime}
