@@ -60,7 +60,7 @@ export const SettingsPage: React.FC = () => {
             </section>
 
             <div className="pt-8 text-center">
-                <p className="text-xs text-gray-600">Productivity App v0.1.0</p>
+                <p className="text-xs text-gray-600">Productivity App v1.9.11</p>
             </div>
         </div>
     );
