@@ -114,7 +114,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                 </div>
 
                 {/* Content */}
-                <div className="pl-5 pr-4 py-4 space-y-4 overflow-y-auto overflow-x-hidden">
+                <div className="pl-5 pr-6 py-4 space-y-4 overflow-y-auto overflow-x-hidden">
                     {activeTab === 'event' ? (
                         <>
                             <div>
@@ -173,7 +173,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                 />
                             </div>
                             <div style={{ width: '50%', paddingLeft: '12px', boxSizing: 'border-box' }}>
-                                <label className="block text-xs text-gray-500 mb-1">Finish</label>
+                                <label className="block text-xs text-gray-500 mb-1">End</label>
                                 <input
                                     type="time"
                                     value={endTime}
