@@ -92,7 +92,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
         <div className="fixed inset-0 bg-black/80 z-[60] flex items-end sm:items-center justify-center p-4">
             <div className="bg-gray-800 rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
                     <h3 className="text-lg font-bold text-white">Add to {format(selectedDate, 'MMM d')}</h3>
                     <button onClick={onClose}><X size={24} className="text-gray-400" /></button>
                 </div>
@@ -114,7 +114,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                 </div>
 
                 {/* Content */}
-                <div className="pl-5 pr-10 py-4 space-y-4 overflow-y-auto overflow-x-hidden">
+                <div className="px-6 py-4 space-y-4 overflow-y-auto overflow-x-hidden">
                     {activeTab === 'event' ? (
                         <>
                             <div>
@@ -186,7 +186,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-4 border-t border-gray-700">
+                <div className="px-6 py-4 border-t border-gray-700">
                     <button
                         onClick={handleConfirm}
                         className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
