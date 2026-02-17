@@ -114,10 +114,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                 </div>
 
                 {/* Content */}
-                <div
-                    className="pl-6 py-4 space-y-4 overflow-y-auto overflow-x-hidden"
-                    style={{ paddingRight: '24px' }}
-                >
+                <div className="px-6 py-4 space-y-4 overflow-y-auto overflow-x-hidden">
                     {activeTab === 'event' ? (
                         <>
                             <div>
@@ -165,7 +162,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
 
                     {/* Time Picker (Common) */}
                     {(activeTab === 'task' || (eventType !== 'birthday' && eventType !== 'holiday')) && (
-                        <div className="grid grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 gap-6 w-full">
                             <div>
                                 <label className="block text-xs text-gray-500 mb-1">Start</label>
                                 <input
