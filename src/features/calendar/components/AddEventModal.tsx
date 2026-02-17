@@ -114,7 +114,10 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                 </div>
 
                 {/* Content */}
-                <div className="pl-6 pr-2 py-4 space-y-4 overflow-y-auto overflow-x-hidden">
+                <div
+                    className="pl-6 py-4 space-y-4 overflow-y-auto overflow-x-hidden"
+                    style={{ paddingRight: '24px' }}
+                >
                     {activeTab === 'event' ? (
                         <>
                             <div>
