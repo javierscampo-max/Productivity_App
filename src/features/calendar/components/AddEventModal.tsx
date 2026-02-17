@@ -162,7 +162,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
 
                     {/* Time Picker (Common) */}
                     {(activeTab === 'task' || (eventType !== 'birthday' && eventType !== 'holiday')) && (
-                        <div className="grid grid-cols-2 gap-6 w-full">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                             <div className="min-w-0">
                                 <label className="block text-xs text-gray-500 mb-1">Start</label>
                                 <input
