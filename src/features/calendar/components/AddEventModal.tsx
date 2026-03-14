@@ -111,13 +111,13 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                 {/* Tabs */}
                 <div className="flex border-b border-gray-700">
                     <button
-                        className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'event' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-400 hover:text-gray-200'}`}
+                        className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'event' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-200'}`}
                         onClick={() => setActiveTab('event')}
                     >
                         Event
                     </button>
                     <button
-                        className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'task' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-400 hover:text-gray-200'}`}
+                        className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'task' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-200'}`}
                         onClick={() => setActiveTab('task')}
                     >
                         Tasks
@@ -133,7 +133,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                 <select
                                     value={eventType}
                                     onChange={(e) => setEventType(e.target.value as EventType)}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500"
+                                    className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary"
                                 >
                                     <option value="normal">Normal</option>
                                     <option value="birthday">Birthday</option>
@@ -150,7 +150,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                         if (e.target.value.trim()) setShowError(false);
                                     }}
                                     placeholder="Event Title"
-                                    className={`w-full bg-gray-900 border ${showError ? 'border-red-500' : 'border-gray-700'} rounded px-3 py-2 text-white outline-none focus:border-blue-500 transition-colors`}
+                                    className={`w-full bg-gray-900 border ${showError ? 'border-red-500' : 'border-gray-700'} rounded px-3 py-2 text-white outline-none focus:border-primary transition-colors`}
                                 />
                                 {showError && <p className="text-red-500 text-xs mt-1">Title is required</p>}
                                 {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>}
@@ -162,7 +162,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                             <select
                                 value={selectedTaskId}
                                 onChange={(e) => setSelectedTaskId(e.target.value)}
-                                className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500"
+                                className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary"
                             >
                                 <option value="">-- Choose a task --</option>
                                 {tasks.filter(t => t.status !== 'done').map(task => (
@@ -182,7 +182,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                     type="time"
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded py-2 text-white outline-none focus:border-blue-500 text-sm"
+                                    className="w-full bg-gray-900 border border-gray-700 rounded py-2 text-white outline-none focus:border-primary text-sm text-left px-1"
                                 />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -191,7 +191,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                     type="time"
                                     value={endTime}
                                     onChange={(e) => setEndTime(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded py-2 text-white outline-none focus:border-blue-500 text-sm"
+                                    className="w-full bg-gray-900 border border-gray-700 rounded py-2 text-white outline-none focus:border-primary text-sm text-left px-1"
                                 />
                             </div>
                         </div>
@@ -202,7 +202,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                 <div className="px-6 py-4 border-t border-gray-700">
                     <button
                         onClick={handleConfirm}
-                        className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                        className="w-full bg-primary hover:opacity-90 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
                     >
                         <Check size={20} />
                         Confirm
