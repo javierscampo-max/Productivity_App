@@ -61,6 +61,12 @@ export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) =>
         // Safeguard: Ensure duration is at least 15 minutes to prevent negative height crashes
         if (duration < 15) duration = 15;
 
+        // Clamp to end of the day (24h = 1440 minutes) to prevent overflow
+        const maxDuration = 1440 - startMinutes;
+        if (duration > maxDuration) {
+            duration = maxDuration;
+        }
+
         return {
             top: `${(startMinutes / 60) * hourHeight}px`,
             height: `${(duration / 60) * hourHeight}px`,
