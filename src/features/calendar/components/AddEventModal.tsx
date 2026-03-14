@@ -182,7 +182,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                     type="time"
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500 text-sm"
+                                    className="w-full bg-gray-900 border border-gray-700 rounded py-2 text-white outline-none focus:border-blue-500 text-sm"
                                 />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -191,7 +191,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                     type="time"
                                     value={endTime}
                                     onChange={(e) => setEndTime(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-blue-500 text-sm"
+                                    className="w-full bg-gray-900 border border-gray-700 rounded py-2 text-white outline-none focus:border-blue-500 text-sm"
                                 />
                             </div>
                         </div>
