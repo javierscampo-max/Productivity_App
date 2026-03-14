@@ -206,10 +206,12 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                             className="flex items-center gap-2 text-sm pl-1 py-1"
                                         >
                                             <button
+                                                disabled={task.status === 'done'}
                                                 onClick={() => toggleSubTask(task.id, subTask.id)}
                                                 className={clsx(
                                                     "w-4 h-4 rounded border flex items-center justify-center transition-colors",
-                                                    subTask.completed ? "bg-primary border-primary" : "border-muted hover:border-primary"
+                                                    subTask.completed ? "bg-primary border-primary" : "border-muted hover:border-primary",
+                                                    task.status === 'done' && "opacity-50 cursor-not-allowed"
                                                 )}
                                             >
                                                 {subTask.completed && <Check size={10} className="text-white" strokeWidth={4} />}
@@ -217,29 +219,33 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                             <span className={clsx("text-text transition-colors flex-1", subTask.completed && "line-through text-muted")}>
                                                 {subTask.title}
                                             </span>
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); deleteSubTask(task.id, subTask.id); }}
-                                                className="text-muted hover:text-red-400 opacity-0 group-hover/subtask:opacity-100 transition-opacity p-1"
-                                            >
-                                                <Trash2 size={12} />
-                                            </button>
+                                            {task.status !== 'done' && (
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); deleteSubTask(task.id, subTask.id); }}
+                                                    className="text-muted hover:text-red-400 opacity-0 group-hover/subtask:opacity-100 transition-opacity p-1"
+                                                >
+                                                    <Trash2 size={12} />
+                                                </button>
+                                            )}
                                         </motion.div>
                                     ))}
                                 </AnimatePresence>
                             </div>
 
                             {/* Add Subtask Input */}
-                            <form onSubmit={handleAddSubTask} className="flex items-center gap-2 mt-2 pb-1">
-                                <Plus size={14} className="text-muted" />
-                                <input
-                                    type="text"
-                                    value={newSubTaskTitle}
-                                    onChange={(e) => setNewSubTaskTitle(e.target.value)}
-                                    onKeyDown={(e) => e.stopPropagation()}
-                                    placeholder="Add subtask..."
-                                    className="bg-transparent text-sm text-text placeholder-muted focus:outline-none flex-1 min-w-0"
-                                />
-                            </form>
+                            {task.status !== 'done' && (
+                                <form onSubmit={handleAddSubTask} className="flex items-center gap-2 mt-2 pb-1">
+                                    <Plus size={14} className="text-muted" />
+                                    <input
+                                        type="text"
+                                        value={newSubTaskTitle}
+                                        onChange={(e) => setNewSubTaskTitle(e.target.value)}
+                                        onKeyDown={(e) => e.stopPropagation()}
+                                        placeholder="Add subtask..."
+                                        className="bg-transparent text-sm text-text placeholder-muted focus:outline-none flex-1 min-w-0"
+                                    />
+                                </form>
+                            )}
                         </motion.div>
                     )}
                 </AnimatePresence>
