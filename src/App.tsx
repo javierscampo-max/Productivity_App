@@ -3,6 +3,7 @@ import { TaskList } from './features/tasks/components/TaskList';
 import { useTaskStore } from './features/tasks/store/useTaskStore';
 import { useCalendarStore } from './features/calendar/store/useCalendarStore';
 import { useThemeStore } from './store/useThemeStore';
+import { useSettingsStore } from './store/useSettingsStore';
 import { CalendarPage } from './features/calendar/CalendarPage';
 import { SettingsPage } from './features/settings/SettingsPage';
 import { ListTodo, Calendar, Settings } from 'lucide-react';
@@ -16,15 +17,18 @@ function App() {
     const cleanupPastEvents = useCalendarStore((state) => state.cleanupPastEvents);
     const theme = useThemeStore((state) => state.theme);
 
+    const themeColor = useSettingsStore((state) => state.themeColor);
+
     useEffect(() => {
         // Run cleanup on app mount
         cleanupPastEvents();
     }, [cleanupPastEvents]);
 
-    // Apply theme to body
+    // Apply theme and accent color to body
     useEffect(() => {
         document.body.setAttribute('data-theme', theme);
-    }, [theme]);
+        document.documentElement.style.setProperty('--accent', themeColor);
+    }, [theme, themeColor]);
 
     return (
         <div className="min-h-screen bg-background text-text flex flex-col font-sans transition-colors duration-300">

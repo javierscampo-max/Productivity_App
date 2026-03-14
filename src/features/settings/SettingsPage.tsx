@@ -6,7 +6,7 @@ import { clsx } from 'clsx';
 
 export const SettingsPage: React.FC = () => {
     const { theme, setTheme } = useThemeStore();
-    const { autoCompleteParentTask, syncCalendarEventToTask, setSettings } = useSettingsStore();
+    const { autoCompleteParentTask, syncCalendarEventToTask, themeColor, setSettings } = useSettingsStore();
 
     const themes: { id: Theme; name: string; icon: React.ReactNode; color: string }[] = [
         { id: 'midnight', name: 'Midnight', icon: <Moon size={20} />, color: 'bg-gray-950' },
@@ -42,6 +42,35 @@ export const SettingsPage: React.FC = () => {
                                     <Check size={12} className="text-white" strokeWidth={3} />
                                 </div>
                             )}
+                        </button>
+                    ))}
+                </div>
+            </section>
+
+            {/* Accent Color Section */}
+            <section className="space-y-3 pt-4 border-t border-gray-800">
+                <h3 className="text-xl font-bold text-gray-200">Accent Color</h3>
+                <div className="flex flex-wrap gap-4">
+                    {[
+                        { id: 'blue', hex: '#3b82f6', bg: 'bg-blue-500' },
+                        { id: 'purple', hex: '#8b5cf6', bg: 'bg-purple-500' },
+                        { id: 'pink', hex: '#ec4899', bg: 'bg-pink-500' },
+                        { id: 'red', hex: '#ef4444', bg: 'bg-red-500' },
+                        { id: 'orange', hex: '#f97316', bg: 'bg-orange-500' },
+                        { id: 'green', hex: '#22c55e', bg: 'bg-green-500' },
+                        { id: 'teal', hex: '#14b8a6', bg: 'bg-teal-500' },
+                    ].map((color) => (
+                        <button
+                            key={color.id}
+                            onClick={() => setSettings({ themeColor: color.hex })}
+                            className={clsx(
+                                "w-10 h-10 rounded-full transition-all flex items-center justify-center shadow-md hover:scale-110",
+                                color.bg,
+                                themeColor === color.hex ? "ring-4 ring-offset-2 ring-offset-gray-900 ring-white" : "ring-0"
+                            )}
+                            aria-label={`Select ${color.id} accent color`}
+                        >
+                            {themeColor === color.hex && <Check size={16} className="text-white" strokeWidth={3} />}
                         </button>
                     ))}
                 </div>
