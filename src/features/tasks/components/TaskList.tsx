@@ -10,6 +10,8 @@ import {
     TouchSensor,
     useSensor,
     useSensors,
+    DragOverlay,
+    DragStartEvent,
     DragEndEvent
 } from '@dnd-kit/core';
 import {
@@ -28,6 +30,7 @@ export const TaskList: React.FC = () => {
     const reorderTasks = useTaskStore((state) => state.reorderTasks);
 
     const [newTaskTitle, setNewTaskTitle] = React.useState('');
+    const [activeId, setActiveId] = React.useState<string | null>(null);
 
     const doneTasks = tasks.filter((t) => t.status === 'done');
     const todoTasks = tasks.filter((t) => t.status !== 'done');
@@ -49,7 +52,12 @@ export const TaskList: React.FC = () => {
         })
     );
 
+    const handleDragStart = (event: DragStartEvent) => {
+        setActiveId(event.active.id as string);
+    };
+
     const handleDragEnd = (event: DragEndEvent) => {
+        setActiveId(null);
         const { active, over } = event;
 
         if (!over) return;
@@ -60,13 +68,13 @@ export const TaskList: React.FC = () => {
 
             if (oldIndex !== -1 && newIndex !== -1) {
                 const newTodoTasks = arrayMove(todoTasks, oldIndex, newIndex);
-                // Combine with done tasks (done tasks usually at the end or separate, but for store we need all)
-                // Preserving the order of done tasks relative to each other, and keeping them separated from todo
-                // Note: This logic assumes Todo items are always "above" Done items in the main array, or that order matters only within status groups.
-                // Our store just takes the whole list.
                 reorderTasks([...newTodoTasks, ...doneTasks]);
             }
         }
+    };
+
+    const handleDragCancel = () => {
+        setActiveId(null);
     };
 
     const handleAddTask = (e: React.FormEvent) => {
@@ -85,7 +93,9 @@ export const TaskList: React.FC = () => {
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCorners}
+                    onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
+                    onDragCancel={handleDragCancel}
                 >
                     <SortableContext
                         items={todoTasks.map(t => t.id)}
@@ -109,6 +119,15 @@ export const TaskList: React.FC = () => {
                             </AnimatePresence>
                         </div>
                     </SortableContext>
+                    <DragOverlay>
+                        {activeId ? (
+                            <TaskItem
+                                task={tasks.find((t) => t.id === activeId)!}
+                                onToggle={() => { }} // No-ops for the clone
+                                onDelete={() => { }}
+                            />
+                        ) : null}
+                    </DragOverlay>
                 </DndContext>
             </div>
 
