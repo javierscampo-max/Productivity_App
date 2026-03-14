@@ -11,9 +11,10 @@ interface TaskItemProps {
     task: Task;
     onToggle: (id: string) => void;
     onDelete: (id: string) => void;
+    isOverlay?: boolean;
 }
 
-export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
+export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, isOverlay }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [newSubTaskTitle, setNewSubTaskTitle] = useState('');
     const [isEditing, setIsEditing] = useState(false);
@@ -36,8 +37,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 5 : 'auto',
-        opacity: isDragging ? 0.5 : 1,
+        zIndex: isOverlay ? 50 : (isDragging ? 5 : 'auto'),
+        opacity: isOverlay ? 1 : (isDragging ? 0 : 1), // Completely hide the original element leaving only space
     };
 
     const handleAddSubTask = (e: React.FormEvent) => {
@@ -64,7 +65,6 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
 
     return (
         <motion.div
-            layout
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, height: 0 }}
@@ -75,7 +75,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
             className={clsx(
                 "group bg-surface rounded-xl p-3 shadow-sm border border-border transition-all pl-2 mb-2 cursor-grab active:cursor-grabbing touch-manipulation",
                 task.status === 'done' && "opacity-60 bg-surface/50",
-                isDragging && "opacity-50 z-10"
+                isDragging && !isOverlay && "z-10",
+                isOverlay && "shadow-2xl ring-2 ring-primary/50 cursor-grabbing rotate-2 z-50 scale-105"
             )}
         >
             <div

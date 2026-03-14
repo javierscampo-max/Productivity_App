@@ -125,6 +125,7 @@ export const TaskList: React.FC = () => {
                                 task={tasks.find((t) => t.id === activeId)!}
                                 onToggle={() => { }} // No-ops for the clone
                                 onDelete={() => { }}
+                                isOverlay
                             />
                         ) : null}
                     </DragOverlay>
