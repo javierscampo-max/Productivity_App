@@ -70,16 +70,16 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
             exit={{ opacity: 0, height: 0 }}
             ref={setNodeRef}
             style={style}
+            {...attributes}
+            {...listeners}
             className={clsx(
-                "group bg-surface rounded-xl p-3 shadow-sm border border-border transition-all pl-2 mb-2",
+                "group bg-surface rounded-xl p-3 shadow-sm border border-border transition-all pl-2 mb-2 cursor-grab active:cursor-grabbing touch-manipulation",
                 task.status === 'done' && "opacity-60 bg-surface/50",
                 isDragging && "opacity-50 z-10"
             )}
         >
             <div
-                className="flex items-center gap-3 flex-1 min-w-0 cursor-grab active:cursor-grabbing touch-manipulation"
-                {...attributes}
-                {...listeners}
+                className="flex items-center gap-3 flex-1 min-w-0"
             >
                 {/* Checkbox */}
                 <button
@@ -156,16 +156,18 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
             {/* Actions Row */}
             <div className="flex items-center justify-between mt-2 pl-9 pr-2">
                 <button
+                    onPointerDown={(e) => e.stopPropagation()}
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="flex items-center gap-1 text-xs text-muted hover:text-primary transition-colors"
+                    className="flex items-center gap-1 text-xs text-muted hover:text-primary transition-colors cursor-pointer"
                 >
                     {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                     {isExpanded ? 'Hide' : 'Show'} Subtasks
                 </button>
 
                 <button
+                    onPointerDown={(e) => e.stopPropagation()}
                     onClick={() => onDelete(task.id)}
-                    className="text-muted hover:text-red-400 transition-colors p-1"
+                    className="text-muted hover:text-red-400 transition-colors p-1 cursor-pointer"
                     aria-label="Delete task"
                 >
                     <Trash2 size={16} />
@@ -176,10 +178,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
             <AnimatePresence>
                 {isExpanded && (
                     <motion.div
+                        onPointerDown={(e) => e.stopPropagation()}
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="ml-8 mt-2 space-y-2 border-l-2 border-border pl-3 overflow-hidden"
+                        className="ml-8 mt-2 space-y-2 border-l-2 border-border pl-3 overflow-hidden cursor-default"
                     >
                         <div className="space-y-1">
                             <AnimatePresence>
