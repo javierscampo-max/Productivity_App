@@ -16,4 +16,5 @@ export interface Task {
     status: TaskStatus;
     subTasks: SubTask[];
     createdAt: number;
+    linkedCalendarEventId?: string;
 }

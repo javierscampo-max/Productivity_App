@@ -23,6 +23,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
     // Task Form State
     const [selectedTaskId, setSelectedTaskId] = useState('');
     const [showError, setShowError] = useState(false);
+    const [dateError, setDateError] = useState('');
 
     const tasks = useTaskStore((state) => state.tasks);
     const updateTask = useTaskStore((state) => state.updateTask);
@@ -31,12 +32,22 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
     if (!isOpen || !selectedDate) return null;
 
     const handleConfirm = () => {
+        setDateError('');
+
         // Basic validation
         if (activeTab === 'event' && !eventTitle.trim()) {
             setShowError(true);
             return;
         }
         if (activeTab === 'task' && !selectedTaskId) return;
+
+        const today = startOfDay(new Date());
+        const isPastDate = isBefore(startOfDay(selectedDate), today);
+
+        if (isPastDate && eventType !== 'birthday' && eventType !== 'holiday') {
+            setDateError('Cannot add events or tasks to past dates.');
+            return;
+        }
 
         // Construct Date objects
         const [startH, startM] = startTime.split(':').map(Number);
@@ -142,6 +153,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                     className={`w-full bg-gray-900 border ${showError ? 'border-red-500' : 'border-gray-700'} rounded px-3 py-2 text-white outline-none focus:border-blue-500 transition-colors`}
                                 />
                                 {showError && <p className="text-red-500 text-xs mt-1">Title is required</p>}
+                                {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>}
                             </div>
                         </>
                     ) : (
@@ -157,6 +169,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                                     <option key={task.id} value={task.id}>{task.title}</option>
                                 ))}
                             </select>
+                            {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>}
                         </div>
                     )}
 

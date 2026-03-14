@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { asyncStorage } from '../../../store/storage';
 import { Task } from '../../../types/task';
+import { useSettingsStore } from '../../../store/useSettingsStore';
+import { useCalendarStore } from '../../calendar/store/useCalendarStore';
+
 
 
 interface TaskState {
@@ -10,6 +14,7 @@ interface TaskState {
     updateTask: (id: string, updates: Partial<Task>) => void;
     toggleTaskCompletion: (id: string) => void;
     addSubTask: (taskId: string, title: string) => void;
+    deleteSubTask: (taskId: string, subTaskId: string) => void;
     toggleSubTask: (taskId: string, subTaskId: string) => void;
     reorderTasks: (newOrder: Task[]) => void;
 }
@@ -33,16 +38,41 @@ export const useTaskStore = create<TaskState>()(
             deleteTask: (id) => set((state) => ({
                 tasks: state.tasks.filter((t) => t.id !== id),
             })),
-            updateTask: (id, updates) => set((state) => ({
-                tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
-            })),
-            toggleTaskCompletion: (id) => set((state) => ({
-                tasks: state.tasks.map((t) =>
-                    t.id === id
-                        ? { ...t, status: t.status === 'done' ? 'todo' : 'done' }
-                        : t
-                ),
-            })),
+            updateTask: (id, updates) => set((state) => {
+                // Cross-store update if title changes
+                if (updates.title) {
+                    const calendarEvents = useCalendarStore.getState().events;
+                    const linkedEvents = calendarEvents.filter(e => e.relatedTaskId === id);
+                    linkedEvents.forEach(e => {
+                        useCalendarStore.getState().updateEvent(e.id, { title: updates.title });
+                    });
+                }
+
+                return {
+                    tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+                };
+            }),
+            toggleTaskCompletion: (id) => set((state) => {
+                const newState = state.tasks.map((t) => {
+                    if (t.id === id) {
+                        const newStatus = t.status === 'done' ? 'todo' : 'done';
+
+                        // Cross-store sync: complete calendar event too
+                        const { syncCalendarEventToTask } = useSettingsStore.getState();
+                        if (syncCalendarEventToTask) {
+                            const calendarEvents = useCalendarStore.getState().events;
+                            const linkedEvents = calendarEvents.filter(e => e.relatedTaskId === id);
+                            linkedEvents.forEach(e => {
+                                useCalendarStore.getState().updateEvent(e.id, { completed: newStatus === 'done' });
+                            });
+                        }
+
+                        return { ...t, status: newStatus as any };
+                    }
+                    return t;
+                });
+                return { tasks: newState };
+            }),
             addSubTask: (taskId, title) => set((state) => ({
                 tasks: state.tasks.map((t) =>
                     t.id === taskId
@@ -56,23 +86,42 @@ export const useTaskStore = create<TaskState>()(
                         : t
                 ),
             })),
-            toggleSubTask: (taskId, subTaskId) => set((state) => ({
+            deleteSubTask: (taskId, subTaskId) => set((state) => ({
                 tasks: state.tasks.map((t) =>
                     t.id === taskId
-                        ? {
-                            ...t,
-                            subTasks: t.subTasks.map((st) =>
-                                st.id === subTaskId ? { ...st, completed: !st.completed } : st
-                            ),
-                        }
+                        ? { ...t, subTasks: t.subTasks.filter((st) => st.id !== subTaskId) }
                         : t
                 ),
             })),
+            toggleSubTask: (taskId, subTaskId) => set((state) => {
+                const newState = state.tasks.map((t) => {
+                    if (t.id === taskId) {
+                        const updatedSubTasks = t.subTasks.map((st) =>
+                            st.id === subTaskId ? { ...st, completed: !st.completed } : st
+                        );
+
+                        let updatedStatus = t.status;
+                        const { autoCompleteParentTask } = useSettingsStore.getState();
+
+                        if (autoCompleteParentTask && updatedSubTasks.length > 0 && updatedSubTasks.every(st => st.completed)) {
+                            updatedStatus = 'done';
+                        }
+
+                        return {
+                            ...t,
+                            status: updatedStatus,
+                            subTasks: updatedSubTasks,
+                        };
+                    }
+                    return t;
+                });
+                return { tasks: newState };
+            }),
             reorderTasks: (newOrder) => set({ tasks: newOrder }),
         }),
         {
             name: 'task-storage',
-            storage: createJSONStorage(() => localStorage), // Basic localStorage for now, can switch to localforage if needed for large data
+            storage: createJSONStorage(() => asyncStorage),
         }
     )
 );

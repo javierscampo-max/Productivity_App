@@ -1,10 +1,12 @@
 import React from 'react';
 import { useThemeStore, Theme } from '../../store/useThemeStore';
+import { useSettingsStore } from '../../store/useSettingsStore';
 import { Check, Moon, Cloud, Heart } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export const SettingsPage: React.FC = () => {
     const { theme, setTheme } = useThemeStore();
+    const { autoCompleteParentTask, syncCalendarEventToTask, setSettings } = useSettingsStore();
 
     const themes: { id: Theme; name: string; icon: React.ReactNode; color: string }[] = [
         { id: 'midnight', name: 'Midnight', icon: <Moon size={20} />, color: 'bg-gray-950' },
@@ -45,17 +47,31 @@ export const SettingsPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* Other Settings Placeholders */}
+            {/* General Settings */}
             <section className="space-y-3 pt-4 border-t border-gray-800">
                 <h3 className="text-xl font-bold text-gray-200">General</h3>
                 <div className="bg-gray-800/40 rounded-lg p-4 space-y-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Show Completed Tasks</span>
-                        <div className="w-10 h-6 bg-gray-700 rounded-full relative cursor-not-allowed opacity-50">
-                            <div className="absolute left-1 top-1 w-4 h-4 bg-gray-500 rounded-full"></div>
-                        </div>
+                        <span className="text-gray-300 text-sm font-medium">Auto-complete Parent Task</span>
+                        <button
+                            onClick={() => setSettings({ autoCompleteParentTask: !autoCompleteParentTask })}
+                            className={clsx("w-12 h-6 rounded-full relative transition-colors duration-200 focus:outline-none", autoCompleteParentTask ? "bg-blue-500" : "bg-gray-600")}
+                        >
+                            <div className={clsx("absolute top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200", autoCompleteParentTask ? "left-7" : "left-1")}></div>
+                        </button>
                     </div>
-                    <p className="text-xs text-gray-500">More settings coming soon...</p>
+                    <p className="text-xs text-gray-500 mt-1 mb-4">When all subtasks are marked as done, the parent task is automatically completed.</p>
+
+                    <div className="flex items-center justify-between mt-4">
+                        <span className="text-gray-300 text-sm font-medium">Sync Calendar Completion</span>
+                        <button
+                            onClick={() => setSettings({ syncCalendarEventToTask: !syncCalendarEventToTask })}
+                            className={clsx("w-12 h-6 rounded-full relative transition-colors duration-200 focus:outline-none", syncCalendarEventToTask ? "bg-blue-500" : "bg-gray-600")}
+                        >
+                            <div className={clsx("absolute top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200", syncCalendarEventToTask ? "left-7" : "left-1")}></div>
+                        </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Completing a linked event in the calendar automatically completes the task.</p>
                 </div>
             </section>
 

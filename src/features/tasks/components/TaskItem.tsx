@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Task } from '../../../types/task';
 import { clsx } from 'clsx';
-import { Check, Trash2, GripVertical, ChevronDown, ChevronRight, Plus } from 'lucide-react';
+import { Check, Trash2, ChevronDown, ChevronRight, Plus } from 'lucide-react';
 import { useTaskStore } from '../store/useTaskStore';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -16,8 +16,13 @@ interface TaskItemProps {
 export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [newSubTaskTitle, setNewSubTaskTitle] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const [editTitle, setEditTitle] = useState(task.title);
+
     const addSubTask = useTaskStore((state) => state.addSubTask);
     const toggleSubTask = useTaskStore((state) => state.toggleSubTask);
+    const deleteSubTask = useTaskStore((state) => state.deleteSubTask);
+    const updateTask = useTaskStore((state) => state.updateTask);
 
     const {
         attributes,
@@ -43,6 +48,15 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
         }
     };
 
+    const handleSaveEdit = () => {
+        if (editTitle.trim() && editTitle !== task.title) {
+            updateTask(task.id, { title: editTitle.trim() });
+        } else {
+            setEditTitle(task.title);
+        }
+        setIsEditing(false);
+    };
+
     // Calculate progress
     const completedSubTasks = task.subTasks.filter(st => st.completed).length;
     const totalSubTasks = task.subTasks.length;
@@ -58,24 +72,21 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
             style={style}
             className={clsx(
                 "group bg-surface rounded-xl p-3 shadow-sm border border-border transition-all pl-2 mb-2",
-                task.status === 'done' && "opacity-60 bg-surface/50"
+                task.status === 'done' && "opacity-60 bg-surface/50",
+                isDragging && "opacity-50 z-10"
             )}
         >
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-                {/* Drag Handle */}
-                <div
-                    {...attributes}
-                    {...listeners}
-                    className="cursor-grab text-muted hover:text-text active:cursor-grabbing touch-none p-1"
-                >
-                    <GripVertical size={16} />
-                </div>
-
+            <div
+                className="flex items-center gap-3 flex-1 min-w-0 cursor-grab active:cursor-grabbing touch-manipulation"
+                {...attributes}
+                {...listeners}
+            >
                 {/* Checkbox */}
                 <button
-                    onClick={() => onToggle(task.id)}
+                    onPointerDown={(e) => e.stopPropagation()} // Prevent drag when clicking checkbox
+                    onClick={(e) => { e.stopPropagation(); onToggle(task.id); }}
                     className={clsx(
-                        "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200",
+                        "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 shrink-0 ml-1",
                         task.status === 'done'
                             ? "bg-primary border-primary"
                             : "border-muted hover:border-primary"
@@ -85,16 +96,43 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
                 </button>
 
                 {/* Task Content */}
-                <div className="flex-1 min-w-0">
-                    <p
-                        className={clsx(
-                            "text-sm font-medium leading-none transition-all duration-200",
-                            task.status === 'done' ? "text-muted line-through" : "text-text"
-                        )}
-                    >
-                        {task.title}
-                    </p>
-                    {task.description && (
+                <div
+                    className="flex-1 min-w-0"
+                    onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        if (task.status !== 'done') {
+                            setIsEditing(true);
+                            setEditTitle(task.title);
+                        }
+                    }}
+                >
+                    {isEditing ? (
+                        <input
+                            autoFocus
+                            value={editTitle}
+                            onPointerDown={e => e.stopPropagation()}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            onBlur={handleSaveEdit}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleSaveEdit();
+                                if (e.key === 'Escape') {
+                                    setEditTitle(task.title);
+                                    setIsEditing(false);
+                                }
+                            }}
+                            className="bg-transparent text-sm font-medium leading-none text-text focus:outline-none w-full border-b border-primary"
+                        />
+                    ) : (
+                        <p
+                            className={clsx(
+                                "text-sm font-medium leading-none transition-all duration-200 select-none",
+                                task.status === 'done' ? "text-muted line-through" : "text-text"
+                            )}
+                        >
+                            {task.title}
+                        </p>
+                    )}
+                    {task.description && !isEditing && (
                         <p className={clsx("truncate text-xs mt-0.5", task.status === 'done' ? "text-gray-600" : "text-muted")}>
                             {task.description}
                         </p>
@@ -162,9 +200,15 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) 
                                         >
                                             {subTask.completed && <Check size={10} className="text-white" strokeWidth={4} />}
                                         </button>
-                                        <span className={clsx("text-text transition-colors", subTask.completed && "line-through text-muted")}>
+                                        <span className={clsx("text-text transition-colors flex-1", subTask.completed && "line-through text-muted")}>
                                             {subTask.title}
                                         </span>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); deleteSubTask(task.id, subTask.id); }}
+                                            className="text-muted hover:text-red-400 opacity-0 group-hover/subtask:opacity-100 transition-opacity p-1"
+                                        >
+                                            <Trash2 size={12} />
+                                        </button>
                                     </motion.div>
                                 ))}
                             </AnimatePresence>

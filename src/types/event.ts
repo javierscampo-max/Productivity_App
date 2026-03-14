@@ -12,4 +12,5 @@ export interface CalendarEvent {
     isRecurring?: boolean;
     recurrenceType?: 'yearly'; // for birthdays
     seriesId?: string; // To link recurring events together
+    completed?: boolean;
 }

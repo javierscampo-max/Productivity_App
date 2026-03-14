@@ -1,0 +1,33 @@
+# Core Philosophy
+
+**1. Never Be Lazy**
+Always strive for the highest quality of work. Do not take shortcuts that compromise the integrity, performance, or readability of the codebase. Pay attention to the details.
+
+**2. Minimal and Necessary Changes**
+Only modify the code that is strictly necessary to accomplish the current objective. Avoid unrelated refactoring or "while I'm at it" changes that increase the scope and risk.
+
+**3. Simplicity First**
+New code must be as simple and straightforward as possible. Do not overcomplicate solutions or introduce unnecessary abstractions. Choose readable and maintainable implementations over purely clever ones.
+
+**4. Atomic Commits**
+Adopt an atomic-commit philosophy. After every single logical change, the code should be committed and pushed to GitHub. Commit messages must be clear, descriptive, and accurately reflect the changes made.
+
+**5. Living Documentation**
+These cursor rules must be constantly maintained. They should be updated after every change to reflect new patterns, decisions, or workflows established in the project.
+
+# Project Context
+
+**1. Mobile-First PWA**
+The project is a mobile-first Progressive Web App (PWA) designed for increased productivity. All UI/UX decisions, styling, and functionality should prioritize the mobile experience and performance.
+
+**2. Required Features / App Behavior**
+When implementing or modifying features, adhere to the following intended behaviors:
+- **Calendar Navigation:** Single tap on a day shows events at the bottom. Double tap enters Day View.
+- **Calendar Visuals:** Events show as a dot on the day. Overnight events show a dot on the next week.
+- **Task Manipulation:** Tasks can be dragged/moved by touching anywhere on the item with visual feedback and auto-scrolling. Double-tap to rename.
+- **Task Boundaries:** Done tasks cannot be moved to the undone area, and vice-versa. Undone tasks automatically go to the bottom of the undone list. Done subtasks remain within their parent task.
+- **Data Linkage:** Renaming a linked task renames it in the calendar. Completing an event in the calendar can complete the linked task (based on settings).
+- **Subtasks:** Support subtasks, including adding/deleting them and linking them to the calendar. Completing all subtasks can auto-complete the parent task (based on settings).
+- **Data Lifecycle:** Past events (2-3 days old) are auto-deleted, excluding recurring events (birthdays/holidays). Recurring events generate for the next 5 years and auto-delete 2 years after they pass. Events/tasks cannot be added to past days (except birthdays). Deleting one birthday deletes all subsequent ones.
+- **Customization:** Changeable color schemes.
+- **Offline First:** Full functionality without internet access.

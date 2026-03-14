@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { CalendarEvent } from '../../../types/event';
-import { addYears, subYears, isBefore, startOfDay } from 'date-fns';
+import { asyncStorage } from '../../../store/storage';
+import { addYears, subYears, isBefore, startOfDay, subDays } from 'date-fns';
 
 interface CalendarState {
     events: CalendarEvent[];
     addEvent: (event: Omit<CalendarEvent, 'id'>) => void;
     deleteEvent: (id: string) => void;
+    updateEvent: (id: string, updates: Partial<CalendarEvent>) => void;
     cleanupPastEvents: () => void;
     generateRecurringEvents: () => void; // call periodically?
 }
@@ -51,10 +53,16 @@ export const useCalendarStore = create<CalendarState>()(
                 const eventToDelete = state.events.find((e) => e.id === id);
                 if (!eventToDelete) return {};
 
-                // If it has a seriesId, delete all events in that series
+                // If it has a seriesId, delete all events in that series FROM this date onwards
                 if (eventToDelete.seriesId) {
                     return {
-                        events: state.events.filter((e) => e.seriesId !== eventToDelete.seriesId),
+                        events: state.events.filter((e) => {
+                            if (e.seriesId === eventToDelete.seriesId) {
+                                // keep if it is before the one we are deleting
+                                return isBefore(e.startDate, startOfDay(eventToDelete.startDate));
+                            }
+                            return true;
+                        }),
                     };
                 }
 
@@ -63,6 +71,9 @@ export const useCalendarStore = create<CalendarState>()(
                     events: state.events.filter((e) => e.id !== id),
                 };
             }),
+            updateEvent: (id, updates) => set((state) => ({
+                events: state.events.map((e) => (e.id === id ? { ...e, ...updates } : e)),
+            })),
             cleanupPastEvents: () => set((state) => {
                 const today = startOfDay(new Date());
                 return {
@@ -75,8 +86,8 @@ export const useCalendarStore = create<CalendarState>()(
                             }
                             return true;
                         }
-                        // Remove standard events/tasks if they ended before today
-                        if (isBefore(event.endDate, today)) {
+                        // Remove standard events/tasks if they ended 2 or more days ago
+                        if (isBefore(event.endDate, subDays(today, 2))) {
                             return false;
                         }
                         return true;
@@ -89,7 +100,7 @@ export const useCalendarStore = create<CalendarState>()(
         }),
         {
             name: 'calendar-storage',
-            storage: createJSONStorage(() => localStorage, {
+            storage: createJSONStorage(() => asyncStorage, {
                 reviver: (key, value) => {
                     if (key === 'startDate' || key === 'endDate') {
                         return new Date(value as string);
