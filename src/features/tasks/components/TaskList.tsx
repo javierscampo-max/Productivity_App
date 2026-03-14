@@ -6,10 +6,10 @@ import {
     DndContext,
     closestCorners,
     KeyboardSensor,
-    PointerSensor,
+    MouseSensor,
+    TouchSensor,
     useSensor,
     useSensors,
-    TouchSensor,
     DragEndEvent
 } from '@dnd-kit/core';
 import {
@@ -33,7 +33,7 @@ export const TaskList: React.FC = () => {
     const todoTasks = tasks.filter((t) => t.status !== 'done');
 
     const sensors = useSensors(
-        useSensor(PointerSensor, {
+        useSensor(MouseSensor, {
             activationConstraint: {
                 distance: 8, // Start dragging after moving 8px, good for mouse
             },
