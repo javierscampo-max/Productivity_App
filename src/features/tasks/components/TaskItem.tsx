@@ -235,6 +235,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                     type="text"
                                     value={newSubTaskTitle}
                                     onChange={(e) => setNewSubTaskTitle(e.target.value)}
+                                    onKeyDown={(e) => e.stopPropagation()}
                                     placeholder="Add subtask..."
                                     className="bg-transparent text-sm text-text placeholder-muted focus:outline-none flex-1 min-w-0"
                                 />

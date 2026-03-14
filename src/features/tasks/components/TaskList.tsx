@@ -158,6 +158,7 @@ export const TaskList: React.FC = () => {
                         type="text"
                         value={newTaskTitle}
                         onChange={(e) => setNewTaskTitle(e.target.value)}
+                        onKeyDown={(e) => e.stopPropagation()}
                         placeholder="New Task..."
                         className="flex-1 bg-surface border-border border text-text rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary outline-none placeholder-muted shadow-sm"
                     />
