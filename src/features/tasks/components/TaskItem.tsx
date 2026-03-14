@@ -115,6 +115,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                             onChange={(e) => setEditTitle(e.target.value)}
                             onBlur={handleSaveEdit}
                             onKeyDown={(e) => {
+                                e.stopPropagation(); // Prevent dnd-kit from catching Space and Enter keys
                                 if (e.key === 'Enter') handleSaveEdit();
                                 if (e.key === 'Escape') {
                                     setEditTitle(task.title);
