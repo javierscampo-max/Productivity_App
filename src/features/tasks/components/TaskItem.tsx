@@ -211,7 +211,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                                 className={clsx(
                                                     "w-4 h-4 rounded border flex items-center justify-center transition-colors",
                                                     subTask.completed ? "bg-primary border-primary" : "border-muted hover:border-primary",
-                                                    task.status === 'done' && "opacity-50 cursor-not-allowed"
+                                                    task.status === 'done' && "opacity-50 cursor-default"
                                                 )}
                                             >
                                                 {subTask.completed && <Check size={10} className="text-white" strokeWidth={4} />}
