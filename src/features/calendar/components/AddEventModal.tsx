@@ -4,6 +4,7 @@ import { useCalendarStore } from '../store/useCalendarStore';
 import { EventType } from '../../../types/event';
 import { format, set, startOfDay, addDays, isBefore } from 'date-fns';
 import { X, Check } from 'lucide-react';
+import { CustomTimePicker } from './CustomTimePicker';
 
 interface AddEventModalProps {
     isOpen: boolean;
@@ -178,21 +179,11 @@ export const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, s
                         <div className="flex w-full gap-6">
                             <div className="flex-1 min-w-0">
                                 <label className="block text-xs text-gray-500 mb-1">Start</label>
-                                <input
-                                    type="time"
-                                    value={startTime}
-                                    onChange={(e) => setStartTime(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded py-2 text-white outline-none focus:border-primary text-sm text-center"
-                                />
+                                <CustomTimePicker value={startTime} onChange={setStartTime} />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <label className="block text-xs text-gray-500 mb-1">End</label>
-                                <input
-                                    type="time"
-                                    value={endTime}
-                                    onChange={(e) => setEndTime(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded py-2 text-white outline-none focus:border-primary text-sm text-center"
-                                />
+                                <CustomTimePicker value={endTime} onChange={setEndTime} />
                             </div>
                         </div>
                     )}
