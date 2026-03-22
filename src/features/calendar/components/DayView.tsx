@@ -98,7 +98,7 @@ export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) =>
                 {hours.map((hour) => (
                     <div
                         key={hour}
-                        className="flex items-start border-b border-border opacity-60 hover:opacity-100 transition-opacity"
+                        className="flex items-start border-b border-border opacity-60"
                         style={{ height: `${hourHeight}px` }}
                     >
                         <span className="w-16 text-xs text-muted text-right pr-2 pt-1 font-medium pb-1 inline-block">
