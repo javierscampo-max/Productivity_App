@@ -93,15 +93,15 @@ export const DayView: React.FC<DayViewProps> = ({ date, onBack, onAddEvent }) =>
             </div>
 
             {/* Timeline Content */}
-            <div className="flex-1 overflow-y-auto relative bg-surface/30">
+            <div className="flex-1 overflow-y-auto relative bg-background">
                 {/* Grid Lines */}
                 {hours.map((hour) => (
                     <div
                         key={hour}
-                        className="flex items-start border-b border-border/50"
+                        className="flex items-start border-b border-border opacity-60 hover:opacity-100 transition-opacity"
                         style={{ height: `${hourHeight}px` }}
                     >
-                        <span className="w-16 text-xs text-muted text-right pr-2 pt-1">
+                        <span className="w-16 text-xs text-muted text-right pr-2 pt-1 font-medium pb-1 inline-block">
                             {format(new Date().setHours(hour, 0, 0, 0), 'HH:mm')}
                         </span>
                         <div className="flex-1 border-l border-border h-full relative" />
