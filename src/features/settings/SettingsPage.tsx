@@ -1,18 +1,29 @@
 import React from 'react';
 import { useThemeStore, Theme } from '../../store/useThemeStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
-import { Check, Moon, Cloud, Heart } from 'lucide-react';
+import { Check, Moon, Cloud, Heart, Palette } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export const SettingsPage: React.FC = () => {
     const { theme, setTheme } = useThemeStore();
-    const { autoCompleteParentTask, syncCalendarEventToTask, themeColor, setSettings } = useSettingsStore();
+    const { 
+        autoCompleteParentTask, 
+        syncCalendarEventToTask, 
+        themeColor, 
+        customBgPrimary,
+        customBgSecondary,
+        customTextPrimary,
+        customTextSecondary,
+        customBorder,
+        setSettings 
+    } = useSettingsStore();
 
     const themes: { id: Theme; name: string; icon: React.ReactNode; color: string }[] = [
         { id: 'midnight', name: 'Midnight', icon: <Moon size={20} />, color: 'bg-gray-950' },
         { id: 'neon-blue', name: 'Neon Night', icon: <span className="text-cyan-400 font-bold">N</span>, color: 'bg-slate-900 border-cyan-500' },
         { id: 'sky', name: 'Sky', icon: <Cloud size={20} />, color: 'bg-sky-100' },
         { id: 'pastel-pink', name: 'Pastel Pink', icon: <Heart size={20} />, color: 'bg-rose-100' },
+        { id: 'custom', name: 'Custom', icon: <Palette size={20} />, color: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 border-none' },
     ];
 
     return (
@@ -45,6 +56,50 @@ export const SettingsPage: React.FC = () => {
                         </button>
                     ))}
                 </div>
+
+                {theme === 'custom' && (
+                    <div className="mt-4 p-4 bg-gray-800/40 rounded-xl space-y-3 animate-in fade-in slide-in-from-top-2">
+                        <h4 className="text-sm font-bold text-gray-300 mb-2">Build Your Theme</h4>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs text-gray-500">App Background</label>
+                                <div className="flex items-center gap-2">
+                                    <input type="color" value={customBgPrimary} onChange={e => setSettings({customBgPrimary: e.target.value})} className="w-8 h-8 rounded bg-transparent p-0 border-none cursor-pointer" />
+                                    <span className="text-xs text-gray-400 font-mono">{customBgPrimary}</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs text-gray-500">Card Background</label>
+                                <div className="flex items-center gap-2">
+                                    <input type="color" value={customBgSecondary} onChange={e => setSettings({customBgSecondary: e.target.value})} className="w-8 h-8 rounded bg-transparent p-0 border-none cursor-pointer" />
+                                    <span className="text-xs text-gray-400 font-mono">{customBgSecondary}</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs text-gray-500">Primary Text</label>
+                                <div className="flex items-center gap-2">
+                                    <input type="color" value={customTextPrimary} onChange={e => setSettings({customTextPrimary: e.target.value})} className="w-8 h-8 rounded bg-transparent p-0 border-none cursor-pointer" />
+                                    <span className="text-xs text-gray-400 font-mono">{customTextPrimary}</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs text-gray-500">Secondary Text</label>
+                                <div className="flex items-center gap-2">
+                                    <input type="color" value={customTextSecondary} onChange={e => setSettings({customTextSecondary: e.target.value})} className="w-8 h-8 rounded bg-transparent p-0 border-none cursor-pointer" />
+                                    <span className="text-xs text-gray-400 font-mono">{customTextSecondary}</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs text-gray-500">Borders & Lines</label>
+                                <div className="flex items-center gap-2">
+                                    <input type="color" value={customBorder} onChange={e => setSettings({customBorder: e.target.value})} className="w-8 h-8 rounded bg-transparent p-0 border-none cursor-pointer" />
+                                    <span className="text-xs text-gray-400 font-mono">{customBorder}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </section>
 
             {/* Accent Color Section */}

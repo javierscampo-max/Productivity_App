@@ -17,7 +17,14 @@ function App() {
     const cleanupPastEvents = useCalendarStore((state) => state.cleanupPastEvents);
     const theme = useThemeStore((state) => state.theme);
 
-    const themeColor = useSettingsStore((state) => state.themeColor);
+    const {
+        themeColor,
+        customBgPrimary,
+        customBgSecondary,
+        customTextPrimary,
+        customTextSecondary,
+        customBorder
+    } = useSettingsStore();
 
     useEffect(() => {
         // Run cleanup on app mount
@@ -28,7 +35,24 @@ function App() {
     useEffect(() => {
         document.body.setAttribute('data-theme', theme);
         document.documentElement.style.setProperty('--accent', themeColor);
-    }, [theme, themeColor]);
+
+        if (theme === 'custom') {
+            document.documentElement.style.setProperty('--bg-primary', customBgPrimary);
+            document.documentElement.style.setProperty('--bg-secondary', customBgSecondary);
+            document.documentElement.style.setProperty('--text-primary', customTextPrimary);
+            document.documentElement.style.setProperty('--text-secondary', customTextSecondary);
+            document.documentElement.style.setProperty('--border', customBorder);
+            // Default to dark mode color-scheme for native popups so custom dark UI integrates well
+            document.documentElement.style.setProperty('color-scheme', 'dark');
+        } else {
+            document.documentElement.style.removeProperty('--bg-primary');
+            document.documentElement.style.removeProperty('--bg-secondary');
+            document.documentElement.style.removeProperty('--text-primary');
+            document.documentElement.style.removeProperty('--text-secondary');
+            document.documentElement.style.removeProperty('--border');
+            document.documentElement.style.removeProperty('color-scheme');
+        }
+    }, [theme, themeColor, customBgPrimary, customBgSecondary, customTextPrimary, customTextSecondary, customBorder]);
 
     return (
         <div className="min-h-screen bg-background text-text flex flex-col font-sans transition-colors duration-300">

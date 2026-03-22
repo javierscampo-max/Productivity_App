@@ -6,6 +6,11 @@ interface SettingsState {
     autoCompleteParentTask: boolean;
     syncCalendarEventToTask: boolean;
     themeColor: string; // e.g. '#3b82f6'
+    customBgPrimary: string;
+    customBgSecondary: string;
+    customTextPrimary: string;
+    customTextSecondary: string;
+    customBorder: string;
     setSettings: (updates: Partial<SettingsState>) => void;
 }
 
@@ -15,6 +20,11 @@ export const useSettingsStore = create<SettingsState>()(
             autoCompleteParentTask: true,
             syncCalendarEventToTask: true,
             themeColor: '#3b82f6', // default blue
+            customBgPrimary: '#0f172a',
+            customBgSecondary: '#1e293b',
+            customTextPrimary: '#f8fafc',
+            customTextSecondary: '#cbd5e1',
+            customBorder: '#334155',
             setSettings: (updates) => set((state) => ({ ...state, ...updates })),
         }),
         {
