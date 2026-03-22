@@ -17,27 +17,23 @@ export const CustomTimePicker: React.FC<CustomTimePickerProps> = ({ value, onCha
 
     // 24 hours
     const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
-    // 5-minute increments for cleaner UI (12 items)
-    const minutes = Array.from({ length: 12 }, (_, i) => (i * 5).toString().padStart(2, '0'));
+    // 60 minutes
+    const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
 
     useEffect(() => {
         if (isOpen && buttonRef.current) {
             const rect = buttonRef.current.getBoundingClientRect();
-            // Default placement below the button
             let top = rect.bottom + 8;
             let left = rect.left;
             
-            // Basic boundary collision detection
-            const popoverWidth = 280; // approximate width of our grid
-            const popoverHeight = 310; // approximate height of our grid
+            const popoverWidth = 200; 
+            const popoverHeight = 240; 
 
             if (top + popoverHeight > window.innerHeight) {
-                // Not enough space below, place above
                 top = rect.top - popoverHeight - 8;
             }
 
             if (left + popoverWidth > window.innerWidth) {
-                // Not enough space right, align to right edge
                 left = window.innerWidth - popoverWidth - 16;
             }
 
@@ -45,7 +41,27 @@ export const CustomTimePicker: React.FC<CustomTimePickerProps> = ({ value, onCha
         }
     }, [isOpen]);
 
-    // This handles clicking "off" the popover. We render a full-screen invisible backdrop portal.
+    const hourScrollRef = useRef<HTMLDivElement>(null);
+    const minuteScrollRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll to center the currently selected time so user doesn't have to scroll
+    useEffect(() => {
+        if (isOpen) {
+            setTimeout(() => {
+                const hourEl = document.getElementById(`hour-${h}`);
+                if (hourEl && hourScrollRef.current) {
+                    const topPos = hourEl.offsetTop - (hourScrollRef.current.offsetHeight / 2) + (hourEl.offsetHeight / 2);
+                    hourScrollRef.current.scrollTop = topPos;
+                }
+                const minEl = document.getElementById(`min-${m}`);
+                if (minEl && minuteScrollRef.current) {
+                    const topPos = minEl.offsetTop - (minuteScrollRef.current.offsetHeight / 2) + (minEl.offsetHeight / 2);
+                    minuteScrollRef.current.scrollTop = topPos;
+                }
+            }, 10);
+        }
+    }, [isOpen, h, m]);
+
     const closePicker = () => setIsOpen(false);
 
     return (
@@ -65,7 +81,6 @@ export const CustomTimePicker: React.FC<CustomTimePickerProps> = ({ value, onCha
 
             {isOpen && createPortal(
                 <div className="fixed inset-0 z-[99999]" style={{ isolation: 'isolate' }}>
-                    {/* Invisible backdrop to capture outside clicks and block modal scrolling */}
                     <div 
                         className="absolute inset-0 bg-transparent" 
                         onClick={closePicker} 
@@ -73,51 +88,54 @@ export const CustomTimePicker: React.FC<CustomTimePickerProps> = ({ value, onCha
                         onTouchMove={(e) => e.stopPropagation()}
                     />
                     
-                    {/* The actual popover grid */}
                     <div 
-                        className="absolute bg-gray-900 border border-gray-700 rounded-xl shadow-2xl p-4 w-[280px] animate-in fade-in zoom-in-95 duration-200 ring-1 ring-white/10"
+                        className="absolute bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden w-[200px] h-[240px] flex animate-in fade-in zoom-in-95 duration-200 ring-1 ring-white/10"
                         style={{ top: coords.top, left: coords.left }}
                     >
-                        <div>
-                            <h4 className="text-[10px] text-gray-500 font-bold mb-2 uppercase tracking-wider">Hours</h4>
-                            <div className="grid grid-cols-6 gap-1 mb-5">
-                                {hours.map(hour => (
-                                    <button
-                                        key={`h-${hour}`}
-                                        type="button"
-                                        onClick={() => onChange(`${hour}:${m}`)}
-                                        className={clsx(
-                                            "py-1.5 rounded-md text-xs font-semibold transition-all",
-                                            hour === h ? "bg-primary text-white scale-110 shadow-md" : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                                        )}
-                                    >
-                                        {hour}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="h-px bg-gray-800 -mx-4 mb-4" />
-
-                            <h4 className="text-[10px] text-gray-500 font-bold mb-2 uppercase tracking-wider">Minutes</h4>
-                            <div className="grid grid-cols-6 gap-1">
-                                {/* If current minute isn't exactly a 5-min increment, we can still select it, but we offer 5-min snaps in the grid */}
-                                {minutes.map(minute => (
-                                    <button
-                                        key={`m-${minute}`}
-                                        type="button"
-                                        onClick={() => {
-                                            onChange(`${h}:${minute}`);
-                                            closePicker(); // Auto-close when picking a minute is usually nice workflow
-                                        }}
-                                        className={clsx(
-                                            "py-1.5 rounded-md text-xs font-semibold transition-all",
-                                            minute === m ? "bg-primary text-white scale-110 shadow-md" : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                                        )}
-                                    >
-                                        {minute}
-                                    </button>
-                                ))}
-                            </div>
+                        {/* Hours */}
+                        <div 
+                            ref={hourScrollRef}
+                            className="flex-1 overflow-y-auto border-r border-gray-800 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                        >
+                            <div className="h-[100px]" /> {/* Padding so first items can be visually centered */}
+                            {hours.map(hour => (
+                                <button
+                                    id={`hour-${hour}`}
+                                    key={`h-${hour}`}
+                                    type="button"
+                                    onClick={() => onChange(`${hour}:${m}`)}
+                                    className={clsx(
+                                        "w-full text-center py-2.5 text-sm transition-colors cursor-pointer",
+                                        hour === h ? "bg-primary text-white font-bold text-base shadow-inner" : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                                    )}
+                                >
+                                    {hour}
+                                </button>
+                            ))}
+                            <div className="h-[100px]" /> {/* Padding so last items can be visually centered */}
+                        </div>
+                        
+                        {/* Minutes */}
+                        <div 
+                            ref={minuteScrollRef}
+                            className="flex-1 overflow-y-auto scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                        >
+                            <div className="h-[100px]" />
+                            {minutes.map(minute => (
+                                <button
+                                    id={`min-${minute}`}
+                                    key={`m-${minute}`}
+                                    type="button"
+                                    onClick={() => onChange(`${h}:${minute}`)}
+                                    className={clsx(
+                                        "w-full text-center py-2.5 text-sm transition-colors cursor-pointer",
+                                        minute === m ? "bg-primary text-white font-bold text-base shadow-inner" : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                                    )}
+                                >
+                                    {minute}
+                                </button>
+                            ))}
+                            <div className="h-[100px]" />
                         </div>
                     </div>
                 </div>,
