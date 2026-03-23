@@ -27,16 +27,6 @@ const SubTaskRow: React.FC<{
             exit={{ opacity: 0, x: -10 }}
             className="flex items-center gap-2 text-sm pl-1 py-1 relative group/subtask bg-surface rounded"
         >
-            <div
-                className="cursor-grab active:cursor-grabbing p-0.5 -ml-1 text-muted hover:text-text touch-none"
-                onPointerDown={(e) => {
-                    e.stopPropagation();
-                    controls.start(e);
-                }}
-            >
-                <GripVertical size={14} />
-            </div>
-
             <button
                 disabled={task.status === 'done'}
                 onClick={() => toggleSubTask(task.id, subTask.id)}
@@ -59,6 +49,18 @@ const SubTaskRow: React.FC<{
                     <Trash2 size={12} />
                 </button>
             )}
+
+            <div
+                className="cursor-grab active:cursor-grabbing p-1 text-muted hover:text-text touch-none shrink-0"
+                onPointerDown={(e) => {
+                    e.stopPropagation();
+                    controls.start(e);
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+            >
+                <GripVertical size={14} />
+            </div>
         </Reorder.Item>
     );
 };
@@ -253,6 +255,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                     {isExpanded && (
                         <motion.div
                             onPointerDown={(e) => e.stopPropagation()}
+                            onMouseDown={(e) => e.stopPropagation()}
+                            onTouchStart={(e) => e.stopPropagation()}
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
