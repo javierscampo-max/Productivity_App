@@ -81,7 +81,7 @@ function App() {
             </main>
 
             {/* Bottom Navigation */}
-            <nav className="fixed bottom-0 w-full bg-surface border-t border-border p-2 flex justify-around items-center z-20 safe-area-bottom transition-colors duration-300">
+            <nav className="fixed bottom-0 w-full h-[84px] bg-surface border-t border-border px-2 flex justify-around items-center z-20 safe-area-bottom transition-colors duration-300">
                 <button
                     onClick={() => setCurrentTab('tasks')}
                     className={clsx(
