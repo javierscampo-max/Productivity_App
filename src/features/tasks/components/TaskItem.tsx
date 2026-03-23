@@ -99,7 +99,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                             "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 shrink-0 ml-1",
                             task.status === 'done'
                                 ? "bg-primary border-primary"
-                                : "border-muted hover:border-primary"
+                                : "border-muted active:border-primary md:hover:border-primary"
                         )}
                     >
                         {task.status === 'done' && <Check size={12} className="text-white" strokeWidth={4} />}
@@ -169,7 +169,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                     <button
                         onPointerDown={(e) => e.stopPropagation()}
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="flex items-center gap-1 text-xs text-muted hover:text-primary transition-colors cursor-pointer"
+                        className="flex items-center gap-1 text-xs text-muted active:text-primary md:hover:text-primary transition-colors cursor-pointer"
                     >
                         {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                         {isExpanded ? 'Hide' : 'Show'} Subtasks
@@ -178,7 +178,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                     <button
                         onPointerDown={(e) => e.stopPropagation()}
                         onClick={() => onDelete(task.id)}
-                        className="text-muted hover:text-red-400 transition-colors p-1 cursor-pointer"
+                        className="text-muted active:text-red-400 md:hover:text-red-400 transition-colors p-1 cursor-pointer"
                         aria-label="Delete task"
                     >
                         <Trash2 size={16} />
@@ -210,7 +210,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                                 onClick={() => toggleSubTask(task.id, subTask.id)}
                                                 className={clsx(
                                                     "w-4 h-4 rounded border flex items-center justify-center transition-colors",
-                                                    subTask.completed ? "bg-primary border-primary" : "border-muted hover:border-primary",
+                                                    subTask.completed ? "bg-primary border-primary" : "border-muted active:border-primary md:hover:border-primary",
                                                     task.status === 'done' && "opacity-50 cursor-default"
                                                 )}
                                             >
@@ -222,7 +222,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                             {task.status !== 'done' && (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); deleteSubTask(task.id, subTask.id); }}
-                                                    className="text-muted hover:text-red-400 opacity-0 group-hover/subtask:opacity-100 transition-opacity p-1"
+                                                    className="text-muted active:text-red-400 md:hover:text-red-400 opacity-100 md:opacity-0 md:group-hover/subtask:opacity-100 transition-opacity p-1 cursor-pointer"
                                                 >
                                                     <Trash2 size={12} />
                                                 </button>
