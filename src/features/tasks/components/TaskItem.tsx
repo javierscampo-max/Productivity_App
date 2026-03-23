@@ -1,11 +1,68 @@
 import React, { useState } from 'react';
 import { Task } from '../../../types/task';
 import { clsx } from 'clsx';
-import { Check, Trash2, ChevronDown, ChevronRight, Plus } from 'lucide-react';
+import { Check, Trash2, ChevronDown, ChevronRight, Plus, GripVertical } from 'lucide-react';
 import { useTaskStore } from '../store/useTaskStore';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion';
+import { SubTask } from '../../../types/task';
+
+// --- Subtask Component ---
+const SubTaskRow: React.FC<{
+    subTask: SubTask;
+    task: Task;
+    toggleSubTask: (taskId: string, subTaskId: string) => void;
+    deleteSubTask: (taskId: string, subTaskId: string) => void;
+}> = ({ subTask, task, toggleSubTask, deleteSubTask }) => {
+    const controls = useDragControls();
+
+    return (
+        <Reorder.Item
+            value={subTask}
+            dragListener={false}
+            dragControls={controls}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            className="flex items-center gap-2 text-sm pl-1 py-1 relative group/subtask bg-surface rounded"
+        >
+            <div
+                className="cursor-grab active:cursor-grabbing p-0.5 -ml-1 text-muted hover:text-text touch-none"
+                onPointerDown={(e) => {
+                    e.stopPropagation();
+                    controls.start(e);
+                }}
+            >
+                <GripVertical size={14} />
+            </div>
+
+            <button
+                disabled={task.status === 'done'}
+                onClick={() => toggleSubTask(task.id, subTask.id)}
+                className={clsx(
+                    "w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0",
+                    subTask.completed ? "bg-primary border-primary" : "border-muted active:border-primary md:hover:border-primary",
+                    task.status === 'done' && "opacity-50 cursor-default"
+                )}
+            >
+                {subTask.completed && <Check size={10} className="text-white" strokeWidth={4} />}
+            </button>
+            <span className={clsx("text-text transition-colors flex-1 break-words leading-snug", subTask.completed && "line-through text-muted")}>
+                {subTask.title}
+            </span>
+            {task.status !== 'done' && (
+                <button
+                    onClick={(e) => { e.stopPropagation(); deleteSubTask(task.id, subTask.id); }}
+                    className="text-muted active:text-red-400 md:hover:text-red-400 opacity-100 md:opacity-0 md:group-hover/subtask:opacity-100 transition-opacity p-1 cursor-pointer shrink-0"
+                >
+                    <Trash2 size={12} />
+                </button>
+            )}
+        </Reorder.Item>
+    );
+};
+// -------------------------
 
 interface TaskItemProps {
     task: Task;
@@ -24,6 +81,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
     const toggleSubTask = useTaskStore((state) => state.toggleSubTask);
     const deleteSubTask = useTaskStore((state) => state.deleteSubTask);
     const updateTask = useTaskStore((state) => state.updateTask);
+    const reorderSubTasks = useTaskStore((state) => state.reorderSubTasks);
 
     const {
         attributes,
@@ -65,6 +123,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
     const completedSubTasks = task.subTasks.filter(st => st.completed).length;
     const totalSubTasks = task.subTasks.length;
     const progress = totalSubTasks === 0 ? 0 : (completedSubTasks / totalSubTasks) * 100;
+
+    const sortedSubTasks = [...task.subTasks].sort((a, b) => {
+        if (a.completed === b.completed) return 0;
+        return a.completed ? 1 : -1;
+    });
 
     return (
         <div
@@ -197,44 +260,22 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                         >
                             <div className="space-y-1">
                                 <AnimatePresence>
-                                    {[...task.subTasks]
-                                        .sort((a, b) => {
-                                            if (a.completed === b.completed) return 0;
-                                            return a.completed ? 1 : -1;
-                                        })
-                                        .map((subTask) => (
-                                        <motion.div
-                                            key={subTask.id}
-                                            layout
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -10 }}
-                                            className="flex items-center gap-2 text-sm pl-1 py-1"
-                                        >
-                                            <button
-                                                disabled={task.status === 'done'}
-                                                onClick={() => toggleSubTask(task.id, subTask.id)}
-                                                className={clsx(
-                                                    "w-4 h-4 rounded border flex items-center justify-center transition-colors",
-                                                    subTask.completed ? "bg-primary border-primary" : "border-muted active:border-primary md:hover:border-primary",
-                                                    task.status === 'done' && "opacity-50 cursor-default"
-                                                )}
-                                            >
-                                                {subTask.completed && <Check size={10} className="text-white" strokeWidth={4} />}
-                                            </button>
-                                            <span className={clsx("text-text transition-colors flex-1 break-words leading-snug", subTask.completed && "line-through text-muted")}>
-                                                {subTask.title}
-                                            </span>
-                                            {task.status !== 'done' && (
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); deleteSubTask(task.id, subTask.id); }}
-                                                    className="text-muted active:text-red-400 md:hover:text-red-400 opacity-100 md:opacity-0 md:group-hover/subtask:opacity-100 transition-opacity p-1 cursor-pointer"
-                                                >
-                                                    <Trash2 size={12} />
-                                                </button>
-                                            )}
-                                        </motion.div>
-                                    ))}
+                                    <Reorder.Group
+                                        axis="y"
+                                        values={sortedSubTasks}
+                                        onReorder={(newOrder) => reorderSubTasks(task.id, newOrder)}
+                                        className="space-y-1"
+                                    >
+                                        {sortedSubTasks.map((subTask) => (
+                                            <SubTaskRow
+                                                key={subTask.id}
+                                                subTask={subTask}
+                                                task={task}
+                                                toggleSubTask={toggleSubTask}
+                                                deleteSubTask={deleteSubTask}
+                                            />
+                                        ))}
+                                    </Reorder.Group>
                                 </AnimatePresence>
                             </div>
 

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { asyncStorage } from '../../../store/storage';
-import { Task } from '../../../types/task';
+import { Task, SubTask } from '../../../types/task';
 import { useSettingsStore } from '../../../store/useSettingsStore';
 import { useCalendarStore } from '../../calendar/store/useCalendarStore';
 
@@ -16,6 +16,7 @@ interface TaskState {
     addSubTask: (taskId: string, title: string) => void;
     deleteSubTask: (taskId: string, subTaskId: string) => void;
     toggleSubTask: (taskId: string, subTaskId: string) => void;
+    reorderSubTasks: (taskId: string, newOrder: SubTask[]) => void;
     reorderTasks: (newOrder: Task[]) => void;
 }
 
@@ -141,6 +142,11 @@ export const useTaskStore = create<TaskState>()(
                 });
                 return { tasks: newState };
             }),
+            reorderSubTasks: (taskId, newOrder) => set((state) => ({
+                tasks: state.tasks.map((t) =>
+                    t.id === taskId ? { ...t, subTasks: newOrder } : t
+                ),
+            })),
             reorderTasks: (newOrder) => set({ tasks: newOrder }),
         }),
         {
