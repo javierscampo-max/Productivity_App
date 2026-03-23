@@ -197,9 +197,15 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                         >
                             <div className="space-y-1">
                                 <AnimatePresence>
-                                    {task.subTasks.map((subTask) => (
+                                    {[...task.subTasks]
+                                        .sort((a, b) => {
+                                            if (a.completed === b.completed) return 0;
+                                            return a.completed ? 1 : -1;
+                                        })
+                                        .map((subTask) => (
                                         <motion.div
                                             key={subTask.id}
+                                            layout
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             exit={{ opacity: 0, x: -10 }}
