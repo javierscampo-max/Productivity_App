@@ -5,6 +5,7 @@ export interface SubTask {
     id: string;
     title: string;
     completed: boolean;
+    completedBeforeParent?: boolean;
 }
 
 export interface Task {

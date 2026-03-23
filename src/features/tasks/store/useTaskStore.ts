@@ -57,6 +57,24 @@ export const useTaskStore = create<TaskState>()(
                     if (t.id === id) {
                         const newStatus = t.status === 'done' ? 'todo' : 'done';
 
+                        // Handle subtasks auto-completion memory
+                        let updatedSubTasks = t.subTasks;
+                        if (newStatus === 'done') {
+                            // Parent being marked done
+                            updatedSubTasks = t.subTasks.map(st => ({
+                                ...st,
+                                completedBeforeParent: st.completed, // store original state
+                                completed: true // force complete
+                            }));
+                        } else {
+                            // Parent being marked undone
+                            updatedSubTasks = t.subTasks.map(st => ({
+                                ...st,
+                                completed: st.completedBeforeParent !== undefined ? st.completedBeforeParent : st.completed, // restore original state
+                                completedBeforeParent: undefined // clear memory
+                            }));
+                        }
+
                         // Cross-store sync: complete calendar event too
                         const { syncCalendarEventToTask } = useSettingsStore.getState();
                         if (syncCalendarEventToTask) {
@@ -67,7 +85,7 @@ export const useTaskStore = create<TaskState>()(
                             });
                         }
 
-                        return { ...t, status: newStatus as any };
+                        return { ...t, status: newStatus as any, subTasks: updatedSubTasks };
                     }
                     return t;
                 });
