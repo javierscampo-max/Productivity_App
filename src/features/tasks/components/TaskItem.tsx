@@ -282,7 +282,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                     <button
                         onPointerDown={(e) => e.stopPropagation()}
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="flex items-center gap-1 text-xs text-muted active:text-primary md:hover:text-primary transition-colors cursor-pointer"
+                        className="flex items-center gap-1 text-xs text-muted active:text-primary md:hover:text-primary transition-colors cursor-pointer select-none"
                     >
                         {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                         {isExpanded ? 'Hide' : 'Show'} Subtasks
