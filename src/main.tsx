@@ -5,7 +5,13 @@ import './index.css'
 import { registerSW } from 'virtual:pwa-register'
 
 // Register Service Worker for PWA
-registerSW({ immediate: true })
+registerSW({
+    immediate: true,
+    onNeedRefresh() {
+        // Automatically hard refresh the page when a new update is downloaded
+        window.location.reload();
+    }
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
