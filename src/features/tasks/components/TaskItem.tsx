@@ -51,10 +51,15 @@ const SubTaskRow: React.FC<{
             )}
 
             <div
-                className="cursor-grab active:cursor-grabbing p-1 text-muted hover:text-text touch-none shrink-0"
+                className={clsx(
+                    "p-1 text-muted touch-none shrink-0",
+                    subTask.completed ? "opacity-50 cursor-default" : "cursor-grab active:cursor-grabbing hover:text-text"
+                )}
                 onPointerDown={(e) => {
                     e.stopPropagation();
-                    controls.start(e);
+                    if (!subTask.completed && task.status !== 'done') {
+                        controls.start(e);
+                    }
                 }}
                 onMouseDown={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
