@@ -34,9 +34,9 @@ function App() {
     // Apply theme and accent color to body
     useEffect(() => {
         document.body.setAttribute('data-theme', theme);
-        document.documentElement.style.setProperty('--accent', themeColor);
 
         if (theme === 'custom') {
+            document.documentElement.style.setProperty('--accent', themeColor);
             document.documentElement.style.setProperty('--bg-primary', customBgPrimary);
             document.documentElement.style.setProperty('--bg-secondary', customBgSecondary);
             document.documentElement.style.setProperty('--text-primary', customTextPrimary);
@@ -45,6 +45,7 @@ function App() {
             // Default to dark mode color-scheme for native popups so custom dark UI integrates well
             document.documentElement.style.setProperty('color-scheme', 'dark');
         } else {
+            document.documentElement.style.removeProperty('--accent');
             document.documentElement.style.removeProperty('--bg-primary');
             document.documentElement.style.removeProperty('--bg-secondary');
             document.documentElement.style.removeProperty('--text-primary');
