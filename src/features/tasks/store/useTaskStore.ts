@@ -123,6 +123,12 @@ export const useTaskStore = create<TaskState>()(
 
                         if (autoCompleteParentTask && updatedSubTasks.length > 0 && updatedSubTasks.every(st => st.completed)) {
                             updatedStatus = 'done';
+                            
+                            // Mark the exact subtask that caused this auto-completion so it unchecks if the parent is reverted
+                            const causingSubtask = updatedSubTasks.find(st => st.id === subTaskId);
+                            if (causingSubtask && causingSubtask.completed) {
+                                causingSubtask.completedBeforeParent = false;
+                            }
                         }
 
                         return {
