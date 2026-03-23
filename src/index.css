@@ -25,18 +25,18 @@
 /* Theme Overrides */
 [data-theme='neon-blue'] {
   color-scheme: dark;
-  --bg-primary: #020617;
-  /* slate-950 (Dark Blue) */
-  --bg-secondary: #0f172a;
-  /* slate-900 */
-  --text-primary: #e2e8f0;
-  /* slate-200 */
+  --bg-primary: #050511;
+  /* Deep synthwave night */
+  --bg-secondary: #0f1123;
+  /* Elevated synthwave dark */
+  --text-primary: #ffffff;
+  /* Pure white */
   --text-secondary: #94a3b8;
-  /* slate-400 */
-  --accent: #06b6d4;
-  /* cyan-500 (Neon Blue/Cyan) */
-  --border: #1e293b;
-  /* slate-800 */
+  /* Muted blue-grey */
+  --accent: #00f0ff;
+  /* Electric Cyberpunk Cyan */
+  --border: #1e2548;
+  /* Neon-tinged dark border */
 }
 
 [data-theme='sky'] {

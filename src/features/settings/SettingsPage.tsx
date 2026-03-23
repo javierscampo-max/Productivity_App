@@ -20,7 +20,7 @@ export const SettingsPage: React.FC = () => {
 
     const themes: { id: Theme; name: string; icon: React.ReactNode; color: string }[] = [
         { id: 'midnight', name: 'Midnight', icon: <Moon size={20} />, color: 'bg-gray-950' },
-        { id: 'neon-blue', name: 'Neon Night', icon: <span className="text-cyan-400 font-bold">N</span>, color: 'bg-slate-900 border-cyan-500' },
+        { id: 'neon-blue', name: 'Neon Night', icon: <span className="text-[#00f0ff] font-bold" style={{ textShadow: '0 0 10px #00f0ff' }}>N</span>, color: 'bg-[#050511] border-[#00f0ff] shadow-[0_0_15px_rgba(0,240,255,0.2)]' },
         { id: 'sky', name: 'Sky', icon: <Cloud size={20} />, color: 'bg-sky-100' },
         { id: 'pastel-pink', name: 'Pastel Pink', icon: <Heart size={20} />, color: 'bg-rose-100' },
         { id: 'custom', name: 'Custom', icon: <Palette size={20} />, color: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 border-none' },
