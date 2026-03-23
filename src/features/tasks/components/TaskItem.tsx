@@ -136,7 +136,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                         ) : (
                             <p
                                 className={clsx(
-                                    "text-sm font-medium leading-none transition-all duration-200 select-none",
+                                    "text-sm font-medium leading-snug transition-all duration-200 select-none break-words",
                                     task.status === 'done' ? "text-muted line-through" : "text-text"
                                 )}
                             >
@@ -216,7 +216,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                             >
                                                 {subTask.completed && <Check size={10} className="text-white" strokeWidth={4} />}
                                             </button>
-                                            <span className={clsx("text-text transition-colors flex-1", subTask.completed && "line-through text-muted")}>
+                                            <span className={clsx("text-text transition-colors flex-1 break-words leading-snug", subTask.completed && "line-through text-muted")}>
                                                 {subTask.title}
                                             </span>
                                             {task.status !== 'done' && (
