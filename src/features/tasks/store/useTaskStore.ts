@@ -16,6 +16,7 @@ interface TaskState {
     addSubTask: (taskId: string, title: string) => void;
     deleteSubTask: (taskId: string, subTaskId: string) => void;
     toggleSubTask: (taskId: string, subTaskId: string) => void;
+    updateSubTask: (taskId: string, subTaskId: string, title: string) => void;
     reorderSubTasks: (taskId: string, newOrder: SubTask[]) => void;
     reorderTasks: (newOrder: Task[]) => void;
 }
@@ -142,6 +143,18 @@ export const useTaskStore = create<TaskState>()(
                 });
                 return { tasks: newState };
             }),
+            updateSubTask: (taskId, subTaskId, title) => set((state) => ({
+                tasks: state.tasks.map((t) =>
+                    t.id === taskId
+                        ? {
+                            ...t,
+                            subTasks: t.subTasks.map((st) =>
+                                st.id === subTaskId ? { ...st, title } : st
+                            )
+                        }
+                        : t
+                ),
+            })),
             reorderSubTasks: (taskId, newOrder) => set((state) => ({
                 tasks: state.tasks.map((t) =>
                     t.id === taskId ? { ...t, subTasks: newOrder } : t

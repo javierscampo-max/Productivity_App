@@ -14,8 +14,20 @@ const SubTaskRow: React.FC<{
     task: Task;
     toggleSubTask: (taskId: string, subTaskId: string) => void;
     deleteSubTask: (taskId: string, subTaskId: string) => void;
-}> = ({ subTask, task, toggleSubTask, deleteSubTask }) => {
+    updateSubTask: (taskId: string, subTaskId: string, title: string) => void;
+}> = ({ subTask, task, toggleSubTask, deleteSubTask, updateSubTask }) => {
     const controls = useDragControls();
+    const [isEditing, setIsEditing] = useState(false);
+    const [editTitle, setEditTitle] = useState(subTask.title);
+
+    const handleSaveEdit = () => {
+        if (editTitle.trim() && editTitle !== subTask.title) {
+            updateSubTask(task.id, subTask.id, editTitle.trim());
+        } else {
+            setEditTitle(subTask.title);
+        }
+        setIsEditing(false);
+    };
 
     return (
         <Reorder.Item
@@ -38,9 +50,39 @@ const SubTaskRow: React.FC<{
             >
                 {subTask.completed && <Check size={10} className="text-white" strokeWidth={4} />}
             </button>
-            <span className={clsx("text-text transition-colors flex-1 break-words leading-snug", subTask.completed && "line-through text-muted")}>
-                {subTask.title}
-            </span>
+            <div 
+                className="flex-1 min-w-0"
+                onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    if (!subTask.completed && task.status !== 'done') {
+                        setIsEditing(true);
+                        setEditTitle(subTask.title);
+                    }
+                }}
+            >
+                {isEditing ? (
+                    <input
+                        autoFocus
+                        value={editTitle}
+                        onPointerDown={e => e.stopPropagation()}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onBlur={handleSaveEdit}
+                        onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter') handleSaveEdit();
+                            if (e.key === 'Escape') {
+                                setEditTitle(subTask.title);
+                                setIsEditing(false);
+                            }
+                        }}
+                        className="bg-transparent text-sm leading-snug text-text focus:outline-none w-full border-b border-primary"
+                    />
+                ) : (
+                    <span className={clsx("text-text transition-colors block break-words leading-snug", subTask.completed && "line-through text-muted")}>
+                        {subTask.title}
+                    </span>
+                )}
+            </div>
             {task.status !== 'done' && (
                 <button
                     onClick={(e) => { e.stopPropagation(); deleteSubTask(task.id, subTask.id); }}
@@ -88,6 +130,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
     const toggleSubTask = useTaskStore((state) => state.toggleSubTask);
     const deleteSubTask = useTaskStore((state) => state.deleteSubTask);
     const updateTask = useTaskStore((state) => state.updateTask);
+    const updateSubTask = useTaskStore((state) => state.updateSubTask);
     const reorderSubTasks = useTaskStore((state) => state.reorderSubTasks);
 
     const {
@@ -282,6 +325,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                                 task={task}
                                                 toggleSubTask={toggleSubTask}
                                                 deleteSubTask={deleteSubTask}
+                                                updateSubTask={updateSubTask}
                                             />
                                         ))}
                                     </Reorder.Group>
