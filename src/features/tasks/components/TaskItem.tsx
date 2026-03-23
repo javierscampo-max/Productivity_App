@@ -78,7 +78,7 @@ const SubTaskRow: React.FC<{
                         className="bg-transparent text-sm leading-snug text-text focus:outline-none w-full border-b border-primary"
                     />
                 ) : (
-                    <span className={clsx("text-text transition-colors block break-words leading-snug", subTask.completed && "line-through text-muted")}>
+                    <span className={clsx("text-text transition-colors block break-words leading-snug select-none", subTask.completed && "line-through text-muted")}>
                         {subTask.title}
                     </span>
                 )}
@@ -257,7 +257,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                             </p>
                         )}
                         {task.description && !isEditing && (
-                            <p className={clsx("truncate text-xs mt-0.5", task.status === 'done' ? "text-gray-600" : "text-muted")}>
+                            <p className={clsx("truncate text-xs mt-0.5 select-none", task.status === 'done' ? "text-gray-600" : "text-muted")}>
                                 {task.description}
                             </p>
                         )}
