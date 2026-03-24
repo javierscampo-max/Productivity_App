@@ -14,8 +14,8 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Productivity App',
-        short_name: 'ProdApp',
+        name: 'Apex',
+        short_name: 'Apex',
         description: 'Mobile First Productivity PWA',
         theme_color: '#000000',
         icons: [

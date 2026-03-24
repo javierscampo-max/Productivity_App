@@ -6,6 +6,7 @@ import { useThemeStore } from './store/useThemeStore';
 import { useSettingsStore } from './store/useSettingsStore';
 import { CalendarPage } from './features/calendar/CalendarPage';
 import { SettingsPage } from './features/settings/SettingsPage';
+import { ApexLogo } from './components/ApexLogo';
 import { ListTodo, Calendar, Settings } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -60,9 +61,12 @@ function App() {
             {/* Header - Only show on Tasks and Settings, Calendar has its own header */}
             {currentTab !== 'calendar' && (
                 <header className="fixed top-0 w-full z-10 bg-surface/80 backdrop-blur-md border-b border-border p-4 transition-colors duration-300">
-                    <h1 className="text-2xl font-bold text-center text-primary">
-                        {currentTab === 'tasks' ? 'My Tasks' : 'Settings'}
-                    </h1>
+                    <div className="flex items-center justify-center gap-2 text-primary">
+                        {currentTab === 'tasks' && <ApexLogo className="w-8 h-8 drop-shadow-[0_0_8px_rgba(var(--accent-rgb),0.5)]" />}
+                        <h1 className="text-2xl font-bold">
+                            {currentTab === 'tasks' ? 'Apex' : 'Settings'}
+                        </h1>
+                    </div>
                     {currentTab === 'tasks' && (
                         <p className="text-xs text-center text-muted mt-1">
                             {tasks.filter((t) => t.status !== 'done').length} left
