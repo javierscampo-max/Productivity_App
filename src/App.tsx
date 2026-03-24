@@ -7,6 +7,7 @@ import { useSettingsStore } from './store/useSettingsStore';
 import { CalendarPage } from './features/calendar/CalendarPage';
 import { SettingsPage } from './features/settings/SettingsPage';
 import { ApexLogo } from './components/ApexLogo';
+import { AiChatPanel } from './features/ai/components/AiChatPanel';
 import { ListTodo, Calendar, Settings } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -84,6 +85,8 @@ function App() {
                 {currentTab === 'calendar' && <CalendarPage />}
                 {currentTab === 'settings' && <SettingsPage />}
             </main>
+
+            <AiChatPanel />
 
             {/* Bottom Navigation */}
             <nav className="fixed bottom-0 w-full h-[84px] bg-surface border-t border-border px-2 flex justify-around items-center z-20 safe-area-bottom transition-colors duration-300">

@@ -11,6 +11,7 @@ interface SettingsState {
     customTextPrimary: string;
     customTextSecondary: string;
     customBorder: string;
+    geminiApiKey: string;
     setSettings: (updates: Partial<SettingsState>) => void;
 }
 
@@ -25,6 +26,7 @@ export const useSettingsStore = create<SettingsState>()(
             customTextPrimary: '#f8fafc',
             customTextSecondary: '#cbd5e1',
             customBorder: '#334155',
+            geminiApiKey: '',
             setSettings: (updates) => set((state) => ({ ...state, ...updates })),
         }),
         {

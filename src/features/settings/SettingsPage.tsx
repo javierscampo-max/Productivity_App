@@ -1,7 +1,7 @@
 import React from 'react';
 import { useThemeStore, Theme } from '../../store/useThemeStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
-import { Check, Moon, Cloud, Heart, Palette } from 'lucide-react';
+import { Check, Moon, Cloud, Heart, Palette, Key } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export const SettingsPage: React.FC = () => {
@@ -15,6 +15,7 @@ export const SettingsPage: React.FC = () => {
         customTextPrimary,
         customTextSecondary,
         customBorder,
+        geminiApiKey,
         setSettings 
     } = useSettingsStore();
 
@@ -110,6 +111,37 @@ export const SettingsPage: React.FC = () => {
             </section>
 
 
+
+            {/* AI Assistant Settings */}
+            <section className="space-y-3 pt-4 border-t border-gray-800">
+                <h3 className="text-xl font-bold text-gray-200">AI Assistant Integration</h3>
+                <div className="bg-gray-800/40 rounded-lg p-4 space-y-4">
+                    <div className="space-y-3">
+                        <label className="text-gray-300 text-sm font-medium flex items-center gap-2">
+                            <Key size={16} className="text-primary" />
+                            Google Gemini API Key
+                        </label>
+                        <p className="text-xs text-gray-500 leading-relaxed">
+                            To enable the Smart Assistant, paste your free Gemini 1.5 API Key below. This key is stored completely locally via IndexedDB and never sent to any tracking servers.
+                        </p>
+                        <a 
+                            href="https://aistudio.google.com/app/apikey" 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="text-xs text-primary hover:opacity-80 transition-opacity inline-block mb-1"
+                        >
+                            Get your free key here &rarr;
+                        </a>
+                        <input
+                            type="password"
+                            placeholder="AIzaSy..."
+                            value={geminiApiKey}
+                            onChange={(e) => setSettings({ geminiApiKey: e.target.value })}
+                            className="w-full bg-gray-900/50 border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-muted focus:outline-none focus:border-primary transition-colors"
+                        />
+                    </div>
+                </div>
+            </section>
 
             {/* General Settings */}
             <section className="space-y-3 pt-4 border-t border-gray-800">

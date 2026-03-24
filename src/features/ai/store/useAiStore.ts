@@ -1,0 +1,101 @@
+import { create } from 'zustand';
+import { GoogleGenerativeAI, ChatSession } from '@google/generative-ai';
+import { useSettingsStore } from '../../../store/useSettingsStore';
+import { aiTools, executeAiTool } from '../api';
+
+export interface AiMessage {
+    id: string;
+    role: 'user' | 'model';
+    text: string;
+}
+
+interface AiState {
+    isOpen: boolean;
+    setIsOpen: (isOpen: boolean) => void;
+    messages: AiMessage[];
+    isTyping: boolean;
+    chatSession: ChatSession | null;
+    initChat: () => void;
+    sendMessage: (text: string) => Promise<void>;
+    clearHistory: () => void;
+}
+
+export const useAiStore = create<AiState>((set, get) => ({
+    isOpen: false,
+    setIsOpen: (isOpen) => set({ isOpen }),
+    messages: [
+        { id: '1', role: 'model', text: "Hi! I'm Apex AI. I have direct access to your task list and calendar. Ask me to plan your day, add events, or break down a project into subtasks!" }
+    ],
+    isTyping: false,
+    chatSession: null,
+
+    initChat: () => {
+        const apiKey = useSettingsStore.getState().geminiApiKey;
+        if (!apiKey) return;
+
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-1.5-flash",
+            tools: [{ functionDeclarations: aiTools }],
+            systemInstruction: "You are the Apex AI Assistant. You exist natively inside a sleek offline-first productivity PWA. You are helpful, extremely concise, and proactive. ALWAYS intelligently call your tools to fetch user data if you need context, or to create tasks/events on behalf of the user when they instruct you."
+        });
+
+        const chat = model.startChat({ history: [] });
+        set({ chatSession: chat });
+    },
+
+    sendMessage: async (text: string) => {
+        const { chatSession, messages } = get();
+        if (!chatSession) {
+            get().initChat();
+            if (!get().chatSession) {
+                set({ messages: [...messages, { id: crypto.randomUUID(), role: 'model', text: 'Error: Please configure your Gemini API Key in the Settings tab first!' }] });
+                return;
+            }
+        }
+
+        const currentChat = get().chatSession!;
+        const userMsg: AiMessage = { id: crypto.randomUUID(), role: 'user', text };
+        set((state) => ({ messages: [...state.messages, userMsg], isTyping: true }));
+
+        try {
+            let result = await currentChat.sendMessage(text);
+            let functionCalls = result.response.functionCalls();
+            
+            // Loop for chained tool execution
+            while (functionCalls && functionCalls.length > 0) {
+                const call = functionCalls[0];
+                const functionResponse = await executeAiTool(call);
+                
+                result = await currentChat.sendMessage([{
+                    functionResponse: {
+                        name: call.name,
+                        response: functionResponse
+                    }
+                }]);
+                functionCalls = result.response.functionCalls();
+            }
+
+            const modelReply = result.response.text();
+            if (modelReply) {
+                const modelMsg: AiMessage = { id: crypto.randomUUID(), role: 'model', text: modelReply };
+                set((state) => ({ messages: [...state.messages, modelMsg] }));
+            }
+            
+        } catch (error: any) {
+            console.error("AI Assistant Error:", error);
+            const errorMsg: AiMessage = { id: crypto.randomUUID(), role: 'model', text: `Connection Error: ${error.message}` };
+            set((state) => ({ messages: [...state.messages, errorMsg] }));
+        } finally {
+            set({ isTyping: false });
+        }
+    },
+    
+    clearHistory: () => {
+        set({ 
+            chatSession: null,
+            messages: [{ id: '1', role: 'model', text: "Hi! I'm Apex AI. I have direct access to your task list and calendar. Ask me to plan your day, add events, or break down a project into subtasks!" }] 
+        });
+        get().initChat();
+    }
+}));
