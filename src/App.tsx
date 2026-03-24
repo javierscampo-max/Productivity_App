@@ -62,7 +62,7 @@ function App() {
             {currentTab !== 'calendar' && (
                 <header className="fixed top-0 w-full z-10 bg-surface/80 backdrop-blur-md border-b border-border p-4 transition-colors duration-300">
                     <div className="flex items-center justify-center gap-2 text-primary">
-                        {currentTab === 'tasks' && <ApexLogo className="w-8 h-8 drop-shadow-[0_0_8px_rgba(var(--accent-rgb),0.5)]" />}
+                        {currentTab === 'tasks' && <ApexLogo className="w-8 h-8" />}
                         <h1 className="text-2xl font-bold">
                             {currentTab === 'tasks' ? 'My Tasks' : 'Settings'}
                         </h1>
