@@ -64,7 +64,7 @@ function App() {
                     <div className="flex items-center justify-center gap-2 text-primary">
                         {currentTab === 'tasks' && <ApexLogo className="w-8 h-8 drop-shadow-[0_0_8px_rgba(var(--accent-rgb),0.5)]" />}
                         <h1 className="text-2xl font-bold">
-                            {currentTab === 'tasks' ? 'Apex' : 'Settings'}
+                            {currentTab === 'tasks' ? 'My Tasks' : 'Settings'}
                         </h1>
                     </div>
                     {currentTab === 'tasks' && (
