@@ -12,16 +12,19 @@ export const ApexLogo: React.FC<ApexLogoProps> = ({ className }) => {
             fill="none" 
             xmlns="http://www.w3.org/2000/svg" 
             className={clsx("transition-colors duration-300", className)}
-            style={{ filter: "drop-shadow(0px 0px 4px currentColor)" }}
+            style={{ filter: "drop-shadow(0px 0px 5px currentColor)" }}
         >
-            {/* Main Left Pillar */}
-            <path d="M52 12 L20 85 h13 L59 12 Z" fill="currentColor" />
+            {/* The Thin Glowing Left Strike */}
+            <polygon points="46,16 16,85 21,85 50,16" fill="currentColor" />
             
-            {/* Secondary Right Pillar/Crossbar */}
-            <path d="M42 62 L60 22 L82 85 h-12 L57 42 L48 60 Z" fill="currentColor" className="opacity-80" />
+            {/* The Thick Main Left Body */}
+            <polygon points="52,14 24,85 35,85 60,14" fill="currentColor" className="opacity-70" />
             
-            {/* Accent Shard Left */}
-            <path d="M22 65 L32 40 h5 L25 65 Z" fill="currentColor" className="opacity-60" />
+            {/* The Outer Right Diagonal Beam */}
+            <polygon points="55,28 84,85 75,85 48,28" fill="currentColor" className="opacity-50" />
+            
+            {/* The Central Intersecting Chevron (Crossbar slanting up, folding down) */}
+            <polygon points="25,65 65,33 74,85 63,85 56,53 31,73" fill="currentColor" className="opacity-95" />
         </svg>
     );
 };
