@@ -23,7 +23,7 @@ export const AiChatPanel: React.FC = () => {
     };
 
     return (
-        <div className="fixed bottom-24 right-4 z-50 flex flex-col items-end pointer-events-none">
+        <div className="fixed bottom-44 right-4 z-50 flex flex-col items-end pointer-events-none">
             
             {/* Chat Window */}
             <div className={clsx(
