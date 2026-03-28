@@ -23,15 +23,15 @@ export const AiChatPanel: React.FC = () => {
     };
 
     return (
-        <>
-            {/* Chat Window Overlay */}
+        <div className="fixed bottom-44 right-3 sm:bottom-24 sm:right-4 z-50 flex flex-col items-end pointer-events-none">
+            
+            {/* Chat Window */}
             <div className={clsx(
-                "fixed z-40 pointer-events-auto bg-surface border border-border shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ease-out transform",
-                // Mobile: dock down right above bottom nav cover the add task input. Desktop: standard spacing.
-                "bottom-[88px] right-3 w-[calc(100vw-24px)] h-[65vh] rounded-2xl",
-                "sm:bottom-24 sm:right-4 sm:w-[380px] sm:h-[500px]",
-                // Pinpoint animation origins perfectly locked to the exact center pixels of the Floating Action Button.
-                "origin-[calc(100%-28px)_calc(100%-116px)] sm:origin-[calc(100%-28px)_calc(100%-28px)]",
+                "pointer-events-auto bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-300 transform mb-4",
+                "h-[450px] w-[calc(100vw-24px)] sm:w-[380px]",
+                // Pinpoint origin EXACTLY to the center of the FAB directly underneath it. 
+                // Bottom margin is 16px (mb-4) + 28px (center of 56px FAB) = 44px perfectly matching coordinates.
+                "origin-[calc(100%-28px)_calc(100%+44px)]",
                 isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
             )}>
                 {/* Header */}
@@ -106,14 +106,13 @@ export const AiChatPanel: React.FC = () => {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={clsx(
-                    "fixed z-50 pointer-events-auto bg-primary text-white w-14 h-14 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.3)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.8)] flex items-center justify-center transition-all duration-300",
-                    "bottom-44 right-3 sm:bottom-24 sm:right-4",
-                    isOpen ? "scale-0 opacity-0 rotate-90" : "scale-100 opacity-100 hover:scale-105 active:scale-95 rotate-0"
+                    "pointer-events-auto bg-primary text-white w-14 h-14 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.3)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.8)] flex items-center justify-center transition-all duration-300 shrink-0",
+                    isOpen ? "opacity-0 rotate-90 scale-50" : "opacity-100 hover:scale-105 active:scale-95 rotate-0 scale-100"
                 )}
                 title="Open Assistant"
             >
                 <Sparkles size={24} />
             </button>
-        </>
+        </div>
     );
 };
