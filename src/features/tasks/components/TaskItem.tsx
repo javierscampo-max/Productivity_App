@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Task } from '../../../types/task';
 import { clsx } from 'clsx';
-import { Check, Trash2, ChevronDown, ChevronRight, Plus, GripVertical } from 'lucide-react';
+import { Check, Trash2, ChevronDown, ChevronRight, Plus } from 'lucide-react';
 import { useTaskStore } from '../store/useTaskStore';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -37,10 +37,20 @@ const SubTaskRow: React.FC<{
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
-            className="flex items-center gap-2 text-sm pl-1 py-1 relative group/subtask bg-surface rounded"
+            className={clsx(
+                "flex items-center gap-2 text-sm pl-1 py-1 pr-2 relative group/subtask bg-surface rounded select-none touch-none",
+                !subTask.completed && task.status !== 'done' && "cursor-grab active:cursor-grabbing"
+            )}
+            onPointerDown={(e) => {
+                // Clicking anywhere starts the drag, unless children stopPropagation
+                if (!subTask.completed && task.status !== 'done') {
+                    controls.start(e);
+                }
+            }}
         >
             <button
                 disabled={task.status === 'done'}
+                onPointerDown={(e) => e.stopPropagation()} // Prevent dragging from checkbox
                 onClick={() => toggleSubTask(task.id, subTask.id)}
                 className={clsx(
                     "w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0",
@@ -64,7 +74,7 @@ const SubTaskRow: React.FC<{
                     <input
                         autoFocus
                         value={editTitle}
-                        onPointerDown={e => e.stopPropagation()}
+                        onPointerDown={e => e.stopPropagation()} // Prevent drag inside input
                         onChange={(e) => setEditTitle(e.target.value)}
                         onBlur={handleSaveEdit}
                         onKeyDown={(e) => {
@@ -85,29 +95,13 @@ const SubTaskRow: React.FC<{
             </div>
             {task.status !== 'done' && (
                 <button
+                    onPointerDown={(e) => e.stopPropagation()} // Prevent dragging from delete button
                     onClick={(e) => { e.stopPropagation(); deleteSubTask(task.id, subTask.id); }}
                     className="text-muted active:text-red-400 md:hover:text-red-400 opacity-100 md:opacity-0 md:group-hover/subtask:opacity-100 transition-opacity p-1 cursor-pointer shrink-0"
                 >
                     <Trash2 size={12} />
                 </button>
             )}
-
-            <div
-                className={clsx(
-                    "p-1 text-muted touch-none shrink-0",
-                    subTask.completed ? "opacity-50 cursor-default" : "cursor-grab active:cursor-grabbing hover:text-text"
-                )}
-                onPointerDown={(e) => {
-                    e.stopPropagation();
-                    if (!subTask.completed && task.status !== 'done') {
-                        controls.start(e);
-                    }
-                }}
-                onMouseDown={(e) => e.stopPropagation()}
-                onTouchStart={(e) => e.stopPropagation()}
-            >
-                <GripVertical size={14} />
-            </div>
         </Reorder.Item>
     );
 };
