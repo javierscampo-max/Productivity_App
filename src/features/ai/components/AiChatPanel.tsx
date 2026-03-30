@@ -23,11 +23,11 @@ export const AiChatPanel: React.FC = () => {
     };
 
     return (
-        <div className="fixed bottom-44 right-3 sm:bottom-24 sm:right-4 z-50 flex flex-col items-end pointer-events-none">
-            
-            {/* Chat Window */}
+        <>
+            {/* Chat Window — bottom aligned with the FAB so it opens FROM the button */}
             <div className={clsx(
-                "pointer-events-auto bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-300 transform",
+                "fixed bottom-44 right-3 sm:bottom-24 sm:right-4 z-50",
+                "bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-300 transform",
                 "h-[450px] w-[320px] sm:w-[380px]",
                 "origin-bottom-right",
                 isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
@@ -100,17 +100,18 @@ export const AiChatPanel: React.FC = () => {
                 </form>
             </div>
 
-            {/* Floating Action Button */}
+            {/* Floating Action Button — shares exact same position */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={clsx(
-                    "pointer-events-auto bg-primary text-white w-14 h-14 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.3)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.8)] flex items-center justify-center transition-all duration-300 shrink-0",
-                    isOpen ? "opacity-0 rotate-90 scale-50" : "opacity-100 hover:scale-105 active:scale-95 rotate-0 scale-100"
+                    "fixed bottom-44 right-3 sm:bottom-24 sm:right-4 z-50",
+                    "bg-primary text-white w-14 h-14 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.3)] flex items-center justify-center transition-all duration-300",
+                    isOpen ? "opacity-0 scale-50 rotate-90 pointer-events-none" : "opacity-100 hover:scale-105 active:scale-95 rotate-0 scale-100"
                 )}
                 title="Open Assistant"
             >
                 <Sparkles size={24} />
             </button>
-        </div>
+        </>
     );
 };
