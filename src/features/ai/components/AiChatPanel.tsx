@@ -9,17 +9,35 @@ export const AiChatPanel: React.FC = () => {
     const apiKey = useSettingsStore(s => s.geminiApiKey);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Auto scroll to bottom
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isTyping, isOpen]);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleInputResize = () => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 100)}px`;
+        }
+    };
+
+    const handleSubmit = (e?: React.FormEvent) => {
+        e?.preventDefault();
         if (!input.trim() || isTyping) return;
         sendMessage(input.trim());
         setInput('');
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto'; // Reset immediately on send
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit();
+        }
     };
 
     return (
@@ -82,13 +100,18 @@ export const AiChatPanel: React.FC = () => {
 
                 {/* Input Area */}
                 <form onSubmit={handleSubmit} className="border-t border-border p-3 bg-surface shrink-0 flex gap-2">
-                    <input
-                        type="text"
+                    <textarea
+                        ref={textareaRef}
+                        rows={1}
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={(e) => {
+                            setInput(e.target.value);
+                            handleInputResize();
+                        }}
+                        onKeyDown={handleKeyDown}
                         placeholder={apiKey ? "Ask Apex to plan something..." : "API key required..."}
                         disabled={!apiKey || isTyping}
-                        className="flex-1 bg-background border border-border rounded-full px-4 py-2 text-sm text-text placeholder-muted focus:outline-none focus:border-primary disabled:opacity-50 transition-colors"
+                        className="flex-1 bg-background border border-border rounded-2xl px-4 py-2 text-sm text-text placeholder-muted focus:outline-none focus:border-primary disabled:opacity-50 transition-colors resize-none overflow-y-auto min-h-[40px] max-h-[100px]"
                     />
                     <button 
                         type="submit" 
