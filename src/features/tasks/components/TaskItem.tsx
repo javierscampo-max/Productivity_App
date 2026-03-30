@@ -292,23 +292,18 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
 
                 {/* Actions Row */}
                 <div className="flex items-center justify-between mt-2 pl-9 pr-2">
-                    <button
-                        onPointerDown={(e) => e.stopPropagation()}
-                        onClick={() => setIsExpanded(!isExpanded)}
-                        className="flex items-center gap-1 text-xs text-muted active:text-primary md:hover:text-primary transition-colors cursor-pointer select-none"
-                    >
-                        {totalSubTasks > 0 ? (
-                            <>
-                                {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                                {isExpanded ? 'Hide' : 'Show'} Subtasks
-                            </>
-                        ) : (
-                            <>
-                                {isExpanded ? <ChevronDown size={14} /> : <Plus size={14} />}
-                                {isExpanded ? 'Cancel' : 'Add Subtask'}
-                            </>
-                        )}
-                    </button>
+                    {totalSubTasks > 0 ? (
+                        <button
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            className="flex items-center gap-1 text-xs text-muted active:text-primary md:hover:text-primary transition-colors cursor-pointer select-none"
+                        >
+                            {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                            {isExpanded ? 'Hide' : 'Show'} Subtasks
+                        </button>
+                    ) : (
+                        <div /> // Placeholder to keep delete button right-aligned in justify-between
+                    )}
 
                     <button
                         onPointerDown={(e) => e.stopPropagation()}
