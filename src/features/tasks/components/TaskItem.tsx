@@ -215,7 +215,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                 className={clsx(
-                    "group bg-surface rounded-xl p-3 shadow-sm border border-border transition-all pl-2 mb-2 cursor-grab active:cursor-grabbing",
+                    "group bg-surface rounded-xl shadow-sm border border-border transition-all pl-2 mb-2 cursor-grab active:cursor-grabbing",
+                    totalSubTasks === 0 ? "py-4 px-3" : "p-3",
                     task.status === 'done' && "opacity-60 bg-surface/50",
                     isOverlay && "shadow-2xl ring-2 ring-primary/50 cursor-grabbing rotate-2 scale-105"
                 )}
@@ -314,18 +315,18 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                 )}
 
                 {/* Subtasks Section */}
-                <AnimatePresence>
-                    {isExpanded && (
-                        <motion.div
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onMouseDown={(e) => e.stopPropagation()}
-                            onTouchStart={(e) => e.stopPropagation()}
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="ml-8 mt-2 space-y-2 border-l-2 border-border pl-3 overflow-hidden cursor-default"
-                        >
-                            <div className="space-y-1">
+                <motion.div
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    initial={false}
+                    animate={{ height: isExpanded ? 'auto' : 0, opacity: isExpanded ? 1 : 0 }}
+                    className={clsx(
+                        "ml-8 space-y-2 border-l-2 border-border pl-3 overflow-hidden cursor-default",
+                        isExpanded ? "mt-2 pt-1 pb-1" : "pointer-events-none"
+                    )}
+                >
+                    <div className="space-y-1">
                                 <AnimatePresence>
                                     <Reorder.Group
                                         axis="y"
@@ -357,14 +358,17 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                         value={newSubTaskTitle}
                                         onChange={(e) => setNewSubTaskTitle(e.target.value)}
                                         onKeyDown={(e) => e.stopPropagation()}
+                                        onBlur={(e) => {
+                                            if (!e.target.value.trim() && totalSubTasks === 0) {
+                                                setIsExpanded(false);
+                                            }
+                                        }}
                                         placeholder="Add subtask..."
                                         className="bg-transparent text-sm text-text placeholder-muted focus:outline-none flex-1 min-w-0"
                                     />
                                 </form>
                             )}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                </motion.div>
             </motion.div>
         </div>
     );
