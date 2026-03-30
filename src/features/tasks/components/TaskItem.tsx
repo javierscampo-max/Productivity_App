@@ -297,8 +297,17 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="flex items-center gap-1 text-xs text-muted active:text-primary md:hover:text-primary transition-colors cursor-pointer select-none"
                     >
-                        {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                        {isExpanded ? 'Hide' : 'Show'} Subtasks
+                        {totalSubTasks > 0 ? (
+                            <>
+                                {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                                {isExpanded ? 'Hide' : 'Show'} Subtasks
+                            </>
+                        ) : (
+                            <>
+                                {isExpanded ? <ChevronDown size={14} /> : <Plus size={14} />}
+                                {isExpanded ? 'Cancel' : 'Add Subtask'}
+                            </>
+                        )}
                     </button>
 
                     <button
