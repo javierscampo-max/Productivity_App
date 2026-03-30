@@ -120,6 +120,9 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(task.title);
 
+    const clickTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    const subtaskInputRef = React.useRef<HTMLInputElement>(null);
+
     const addSubTask = useTaskStore((state) => state.addSubTask);
     const toggleSubTask = useTaskStore((state) => state.toggleSubTask);
     const deleteSubTask = useTaskStore((state) => state.deleteSubTask);
@@ -144,6 +147,28 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
         transition,
         zIndex: isDragging ? 5 : 'auto',
         opacity: isDragging ? 0 : 1,
+    };
+
+    const handleTaskInteraction = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (task.status === 'done') return;
+
+        if (clickTimeoutRef.current) {
+            // Double tap detected -> Open subtasks and focus input
+            clearTimeout(clickTimeoutRef.current);
+            clickTimeoutRef.current = null;
+            setIsExpanded(true);
+            setTimeout(() => {
+                subtaskInputRef.current?.focus();
+            }, 100);
+        } else {
+            // Single tap -> wait to see if it's a double tap, otherwise edit
+            clickTimeoutRef.current = setTimeout(() => {
+                clickTimeoutRef.current = null;
+                setIsEditing(true);
+                setEditTitle(task.title);
+            }, 250);
+        }
     };
 
     const handleAddSubTask = (e: React.FormEvent) => {
@@ -215,13 +240,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                     {/* Task Content */}
                     <div
                         className="flex-1 min-w-0"
-                        onDoubleClick={(e) => {
-                            e.stopPropagation();
-                            if (task.status !== 'done') {
-                                setIsEditing(true);
-                                setEditTitle(task.title);
-                            }
-                        }}
+                        onClick={handleTaskInteraction}
                     >
                         {isEditing ? (
                             <input
@@ -331,6 +350,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                                 <form onSubmit={handleAddSubTask} className="flex items-center gap-2 mt-2 pb-1">
                                     <Plus size={14} className="text-muted" />
                                     <input
+                                        ref={subtaskInputRef}
                                         type="text"
                                         value={newSubTaskTitle}
                                         onChange={(e) => setNewSubTaskTitle(e.target.value)}
