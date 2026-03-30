@@ -27,11 +27,9 @@ export const AiChatPanel: React.FC = () => {
             
             {/* Chat Window */}
             <div className={clsx(
-                "pointer-events-auto bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-300 transform mb-4",
-                "h-[450px] w-[calc(100vw-24px)] sm:w-[380px]",
-                // Pinpoint origin EXACTLY to the center of the FAB directly underneath it. 
-                // Bottom margin is 16px (mb-4) + 28px (center of 56px FAB) = 44px perfectly matching coordinates.
-                "origin-[calc(100%-28px)_calc(100%+44px)]",
+                "pointer-events-auto bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-300 transform",
+                "h-[450px] w-[320px] sm:w-[380px]",
+                "origin-bottom-right",
                 isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
             )}>
                 {/* Header */}
