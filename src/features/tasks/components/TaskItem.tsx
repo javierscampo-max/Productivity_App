@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Task } from '../../../types/task';
 import { clsx } from 'clsx';
 import { Check, Trash2, ChevronDown, ChevronRight, Plus } from 'lucide-react';
@@ -154,13 +155,13 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
         if (task.status === 'done') return;
 
         if (clickTimeoutRef.current) {
-            // Double tap detected -> Open subtasks and focus input
+            // Double tap detected -> Open subtasks and focus synchronously
             clearTimeout(clickTimeoutRef.current);
             clickTimeoutRef.current = null;
-            setIsExpanded(true);
-            setTimeout(() => {
-                subtaskInputRef.current?.focus();
-            }, 100);
+            flushSync(() => {
+                setIsExpanded(true);
+            });
+            subtaskInputRef.current?.focus();
         } else {
             // Single tap -> wait to see if it's a double tap, otherwise edit
             clickTimeoutRef.current = setTimeout(() => {
