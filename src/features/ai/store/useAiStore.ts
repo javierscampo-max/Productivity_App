@@ -35,7 +35,7 @@ export const useAiStore = create<AiState>((set, get) => ({
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             tools: [{ functionDeclarations: aiTools }],
             systemInstruction: "You are the Apex AI Assistant. You exist natively inside a sleek offline-first productivity PWA. You are helpful, extremely concise, and proactive. ALWAYS intelligently call your tools to fetch user data if you need context, or to create tasks/events on behalf of the user when they instruct you."
         });
