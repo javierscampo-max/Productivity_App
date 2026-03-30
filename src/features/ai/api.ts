@@ -20,6 +20,17 @@ export const aiTools: FunctionDeclaration[] = [
         }
     },
     {
+        name: "deleteTask",
+        description: "Deletes a task from the user's to-do list permanently. You MUST use getUserData first to find the exact ID of the task the user wants to delete.",
+        parameters: {
+            type: SchemaType.OBJECT,
+            properties: {
+                taskId: { type: SchemaType.STRING, description: "The exact unique ID of the task to delete." }
+            },
+            required: ["taskId"]
+        }
+    },
+    {
         name: "createCalendarEvent",
         description: "Schedules an event on a specific date in the calendar. Use type 'birthday' for birthdays (auto-recurs yearly), 'holiday' for holidays, or 'normal' for standard events.",
         parameters: {
@@ -69,6 +80,16 @@ export const executeAiTool = async (functionCall: FunctionCall): Promise<any> =>
             });
         }
         return { success: true, message: `Task '${title}' created successfully.` };
+    }
+
+    if (name === 'deleteTask') {
+        const taskId = args.taskId as string;
+        const taskExists = taskStore.tasks.some(t => t.id === taskId);
+        if (!taskExists) {
+            return { success: false, error: `Task with ID ${taskId} not found.` };
+        }
+        taskStore.deleteTask(taskId);
+        return { success: true, message: `Task ${taskId} deleted successfully.` };
     }
 
     if (name === 'createCalendarEvent') {
