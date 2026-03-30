@@ -16,6 +16,7 @@ export const SettingsPage: React.FC = () => {
         customTextSecondary,
         customBorder,
         geminiApiKey,
+        dateFormat,
         setSettings 
     } = useSettingsStore();
 
@@ -147,6 +148,19 @@ export const SettingsPage: React.FC = () => {
             <section className="space-y-3 pt-4 border-t border-gray-800">
                 <h3 className="text-xl font-bold text-gray-200">General</h3>
                 <div className="bg-gray-800/40 rounded-lg p-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <span className="text-gray-300 text-sm font-medium">Date Format</span>
+                        <select
+                            value={dateFormat}
+                            onChange={(e) => setSettings({ dateFormat: e.target.value })}
+                            className="bg-gray-900/50 border border-border rounded-lg px-3 py-1.5 text-sm text-text focus:outline-none focus:border-primary transition-colors"
+                        >
+                            <option value="dd/MM/yyyy">31/03/2026</option>
+                            <option value="MM/dd/yyyy">03/31/2026</option>
+                            <option value="yyyy-MM-dd">2026-03-31</option>
+                            <option value="dd MMMM yyyy">31 March 2026</option>
+                        </select>
+                    </div>
                     <div className="flex items-center justify-between">
                         <span className="text-gray-300 text-sm font-medium">Auto-complete Parent Task</span>
                         <button

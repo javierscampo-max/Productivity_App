@@ -12,6 +12,7 @@ interface SettingsState {
     customTextSecondary: string;
     customBorder: string;
     geminiApiKey: string;
+    dateFormat: string;
     setSettings: (updates: Partial<SettingsState>) => void;
 }
 
@@ -27,6 +28,7 @@ export const useSettingsStore = create<SettingsState>()(
             customTextSecondary: '#cbd5e1',
             customBorder: '#334155',
             geminiApiKey: '',
+            dateFormat: 'dd/MM/yyyy',
             setSettings: (updates) => set((state) => ({ ...state, ...updates })),
         }),
         {
