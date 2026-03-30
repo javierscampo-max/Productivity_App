@@ -288,11 +288,20 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                             </div>
                         )}
                     </div>
+
+                    <button
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onClick={() => onDelete(task.id)}
+                        className="text-muted active:text-red-400 md:hover:text-red-400 transition-colors p-1 cursor-pointer shrink-0"
+                        aria-label="Delete task"
+                    >
+                        <Trash2 size={16} />
+                    </button>
                 </div>
 
                 {/* Actions Row */}
-                <div className="flex items-center justify-between mt-2 pl-9 pr-2">
-                    {totalSubTasks > 0 ? (
+                {totalSubTasks > 0 && (
+                    <div className="flex items-center justify-between mt-2 pl-9 pr-2">
                         <button
                             onPointerDown={(e) => e.stopPropagation()}
                             onClick={() => setIsExpanded(!isExpanded)}
@@ -301,19 +310,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, is
                             {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                             {isExpanded ? 'Hide' : 'Show'} Subtasks
                         </button>
-                    ) : (
-                        <div /> // Placeholder to keep delete button right-aligned in justify-between
-                    )}
-
-                    <button
-                        onPointerDown={(e) => e.stopPropagation()}
-                        onClick={() => onDelete(task.id)}
-                        className="text-muted active:text-red-400 md:hover:text-red-400 transition-colors p-1 cursor-pointer"
-                        aria-label="Delete task"
-                    >
-                        <Trash2 size={16} />
-                    </button>
-                </div>
+                    </div>
+                )}
 
                 {/* Subtasks Section */}
                 <AnimatePresence>
