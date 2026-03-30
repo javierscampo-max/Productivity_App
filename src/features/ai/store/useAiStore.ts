@@ -36,10 +36,19 @@ export const useAiStore = create<AiState>((set, get) => ({
         const genAI = new GoogleGenerativeAI(apiKey);
         const now = new Date();
         const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        // Pre-compute next 7 days so the AI doesn't miscalculate day-of-week
+        const upcoming: string[] = [];
+        for (let i = 0; i <= 7; i++) {
+            const d = new Date(now);
+            d.setDate(now.getDate() + i);
+            const dayName = d.toLocaleDateString('en-GB', { weekday: 'long' });
+            const iso = d.toISOString().split('T')[0];
+            upcoming.push(`${dayName} = ${iso}`);
+        }
         const model = genAI.getGenerativeModel({ 
             model: "gemini-2.5-flash",
             tools: [{ functionDeclarations: aiTools }],
-            systemInstruction: `You are the Apex AI Assistant inside a productivity PWA. Today is ${dateStr}. You are helpful, extremely concise, and proactive. When the user mentions relative dates like "this Wednesday", "tomorrow", "next Friday" etc., resolve them to exact YYYY-MM-DD dates based on today's date. ALWAYS intelligently call your tools to fetch user data if you need context, or to create tasks/events on behalf of the user when they instruct you.`
+            systemInstruction: `You are the Apex AI Assistant inside a productivity PWA. Today is ${dateStr}. Here are the exact dates for each upcoming day: ${upcoming.join(', ')}. When the user says a day name like "Tuesday" or "this Friday", use this mapping to get the exact YYYY-MM-DD date — do NOT calculate it yourself. You are helpful, extremely concise, and proactive. ALWAYS intelligently call your tools to fetch user data if you need context, or to create tasks/events on behalf of the user when they instruct you.`
         });
 
         const chat = model.startChat({ history: [] });
