@@ -21,12 +21,13 @@ export const aiTools: FunctionDeclaration[] = [
     },
     {
         name: "createCalendarEvent",
-        description: "Schedules an event on a specific date in the calendar.",
+        description: "Schedules an event on a specific date in the calendar. Use type 'birthday' for birthdays (auto-recurs yearly), 'holiday' for holidays, or 'normal' for standard events.",
         parameters: {
             type: SchemaType.OBJECT,
             properties: {
                 title: { type: SchemaType.STRING, description: "The title of the scheduled event." },
-                date: { type: SchemaType.STRING, description: "The exact date of the event in YYYY-MM-DD format." }
+                date: { type: SchemaType.STRING, description: "The exact date of the event in YYYY-MM-DD format." },
+                eventType: { type: SchemaType.STRING, description: "One of: 'normal', 'birthday', or 'holiday'. Defaults to 'normal'." }
             },
             required: ["title", "date"]
         }
@@ -73,15 +74,20 @@ export const executeAiTool = async (functionCall: FunctionCall): Promise<any> =>
     if (name === 'createCalendarEvent') {
         const title = args.title as string;
         const dateStr = args.date as string;
-        const parsedDate = new Date(dateStr);
+        const eventType = (args.eventType as string) || 'normal';
+        // Parse YYYY-MM-DD into local time (not UTC) to avoid timezone shift
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const startDate = new Date(year, month - 1, day, 0, 0, 0);
+        const endDate = new Date(year, month - 1, day, 23, 59, 59);
+        const validType = ['normal', 'birthday', 'holiday'].includes(eventType) ? eventType as 'normal' | 'birthday' | 'holiday' : 'normal';
         calendarStore.addEvent({
             title,
-            startDate: parsedDate,
-            endDate: parsedDate,
+            startDate,
+            endDate,
             isAllDay: true,
-            type: 'normal'
+            type: validType
         });
-        return { success: true, message: `Event '${title}' scheduled for ${dateStr}.` };
+        return { success: true, message: `Event '${title}' scheduled for ${dateStr}${validType !== 'normal' ? ` (${validType})` : ''}.` };
     }
 
     if (name === 'getUserData') {
